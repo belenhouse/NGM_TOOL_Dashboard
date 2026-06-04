@@ -399,6 +399,10 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       <div class="nav-item" onclick="showSection('roadmap',this)">
         <span class="icon">▶</span> Roadmap
       </div>
+      <div class="nav-item" onclick="showSection('tareas',this)">
+        <span class="icon">✓</span> Tareas
+        <span class="nav-badge" id="badge-tareas">—</span>
+      </div>
       <div class="nav-item" onclick="showSection('kpis',this)">
         <span class="icon">◈</span> Tracker KPIs
       </div>
@@ -718,6 +722,60 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div id="roadmap-content"><div class="loading"><div class="spinner"></div>Cargando roadmap...</div></div>
   </div>
 
+  <!-- TAREAS -->
+  <div class="section" id="section-tareas">
+    <div class="page-header">
+      <div class="page-header-left"><h1>Tareas</h1><p>Tareas manuales + derivadas automáticamente de riesgos abiertos y dependencias pendientes.</p></div>
+      <button class="btn btn-primary" onclick="toggleAddPanel('tareas')">+ Añadir tarea</button>
+    </div>
+    <div class="add-panel" id="add-panel-tareas">
+      <div class="add-panel-title">Nueva tarea</div>
+      <div class="add-grid">
+        <div class="add-field"><label>Área *</label><select id="tar-area"><option value="Producto">Producto</option><option value="Marketing">Marketing</option><option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option></select></div>
+        <div class="add-field"><label>Nombre Tarea *</label><input type="text" id="tar-nombre" placeholder="Describe la tarea"></div>
+        <div class="add-field full"><label>Descripción</label><input type="text" id="tar-desc" placeholder="Detalle adicional"></div>
+        <div class="add-field"><label>Tipo *</label><select id="tar-tipo"><option value="Manual">Manual</option><option value="Riesgo">Riesgo</option><option value="Dependencia">Dependencia</option></select></div>
+        <div class="add-field"><label>Prioridad *</label><select id="tar-prioridad"><option value="Alta">Alta</option><option value="Media">Media</option><option value="Baja">Baja</option></select></div>
+        <div class="add-field"><label>Responsable</label><input type="text" id="tar-resp" placeholder="Nombre del responsable"></div>
+        <div class="add-field"><label>Fecha Límite</label><input type="date" id="tar-fecha"></div>
+        <div class="add-field"><label>Estado *</label><select id="tar-estado"><option value="Pendiente">Pendiente</option><option value="En curso">En curso</option><option value="Completada">Completada</option><option value="Bloqueada">Bloqueada</option></select></div>
+      </div>
+      <div class="add-actions">
+        <button class="btn btn-ghost" onclick="toggleAddPanel('tareas')">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-tar" onclick="saveNewTarea()">Guardar en Sheet →</button>
+      </div>
+      <div id="add-status-tareas" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Total tareas</div><div class="stat-value" id="s-tar-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pendiente</div><div class="stat-value" id="s-tar-pendiente" style="color:var(--amber)">—</div></div>
+      <div class="stat-card"><div class="stat-label">En curso</div><div class="stat-value" id="s-tar-encurso" style="color:var(--blue)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Completada</div><div class="stat-value" id="s-tar-completada" style="color:var(--green)">—</div></div>
+    </div>
+    <div class="filter-bar">
+      <select class="filter-select" id="filter-tar-area" onchange="filterTareas()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option><option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option>
+      </select>
+      <select class="filter-select" id="filter-tar-estado" onchange="filterTareas()">
+        <option value="">Todos los estados</option>
+        <option>Pendiente</option><option>En curso</option><option>Completada</option><option>Bloqueada</option>
+      </select>
+      <select class="filter-select" id="filter-tar-tipo" onchange="filterTareas()">
+        <option value="">Todos los tipos</option>
+        <option>Manual</option><option>Riesgo</option><option>Dependencia</option>
+      </select>
+      <select class="filter-select" id="filter-tar-prioridad" onchange="filterTareas()">
+        <option value="">Todas las prioridades</option>
+        <option>Alta</option><option>Media</option><option>Baja</option>
+      </select>
+    </div>
+    <div class="table-wrap"><table><thead><tr>
+      <th>Tarea</th><th>Área</th><th>Tipo</th><th>Prioridad</th><th>Responsable</th><th>Fecha límite</th><th>Estado</th>
+    </tr></thead><tbody id="tbody-tareas"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
+  </div>
+
   <!-- KPIs -->
   <div class="section" id="section-kpis">
     <div class="page-header"><div class="page-header-left"><h1>Tracker de KPIs</h1><p>Ejecución · Adopción · Valor</p></div></div>
@@ -751,9 +809,9 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 const SHEET_ID = '1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
-let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbztVqbMTdg7DLxfxpnTM_l9dbWFtY8uouNG_OiP_jmcp7kg8SxJes89V7i32QsAGZf6lw/exec';
+let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVW60zCXDuuY8knQmyyj07bUjsgN7-22uQqPeR7RVaEpm5_Kt7qEUgheIMaL_Kir7IoQ/exec';
 
-let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[] };
+let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[], tareas:[] };
 let roadmapState = {};
 
 // ── NAV ──
@@ -762,7 +820,7 @@ function showSection(id, el) {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
   if(el) el.classList.add('active');
-  const titles = {inventario:'Inventario de Herramientas',matriz:'Matriz Esfuerzo · Impacto',riesgos:'Registro de Riesgos',dependencias:'Dependencias',inversion:'Inversión',roadmap:'Roadmap',kpis:'KPIs'};
+  const titles = {inventario:'Inventario de Herramientas',matriz:'Matriz Esfuerzo · Impacto',riesgos:'Registro de Riesgos',dependencias:'Dependencias',inversion:'Inversión',roadmap:'Roadmap',tareas:'Tareas',kpis:'KPIs'};
   document.getElementById('topbar-title').textContent = titles[id]||id;
   if(id==='matriz') renderMatriz();
 }
@@ -802,9 +860,9 @@ function parseCSVLine(line) {
 // ── LOAD ──
 async function loadAll() {
   try {
-    const [prod,mkt,ops,com,rie,dep,inv,road,kpi] = await Promise.all([
+    const [prod,mkt,ops,com,rie,dep,inv,road,kpi,tar] = await Promise.all([
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
-      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
+      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs'),fetchSheet('Tareas')
     ]);
     prod.forEach(r=>r['_area']='Producto');
     mkt.forEach(r=>r['_area']='Marketing');
@@ -816,6 +874,7 @@ async function loadAll() {
     DATA.inversion=inv.filter(r=>v(r,'Herramienta *','Herramienta'));
     DATA.roadmap=road.filter(r=>v(r,'Nombre Fase *','Nombre Fase'));
     DATA.kpis=kpi.filter(r=>v(r,'Nombre KPI *','Nombre KPI'));
+    DATA.tareas=tar.filter(r=>v(r,'Nombre Tarea *','Nombre Tarea'));
     renderAll();
     document.getElementById('last-update-time').textContent='Actualizado '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   } catch(e){ document.getElementById('last-update-time').textContent='Error al cargar'; }
@@ -824,7 +883,7 @@ function refreshAll(){ loadAll(); }
 
 function renderAll(){
   renderInventario(); renderRiesgos(); renderDependencias();
-  renderInversion(); renderRoadmap(); renderKPIs(); updateBadges();
+  renderInversion(); renderRoadmap(); renderKPIs(); renderTareas(); updateBadges();
 }
 function updateBadges(){
   document.getElementById('badge-inventario').textContent=DATA.inventario.length;
@@ -1258,6 +1317,88 @@ function renderRoadmap(){
 }
 function toggleComplete(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].completed=!roadmapState[id].completed;renderRoadmap();}
 function saveComment(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].comment=document.getElementById('comment-'+id).value;renderRoadmap();}
+
+// ── TAREAS ──
+function getDerivedTareas(){
+  const t=[];
+  DATA.riesgos.filter(r=>v(r,'Estado')==='Abierto').forEach(r=>{
+    t.push({_derived:true,
+      'Nombre Tarea *':'Mitigar: '+(v(r,'Herramienta *','Herramienta')||'?'),
+      'Área *':v(r,'Area *','Área')||'','Descripcion':v(r,'Descripcion del Riesgo *')||'',
+      'Tipo *':'Riesgo','Responsable *':'','Fecha Limite *':'','Estado *':'Pendiente',
+      'Prioridad *':v(r,'Probabilidad *','Probabilidad')==='Alta'?'Alta':'Media'});
+  });
+  DATA.dependencias.filter(r=>['Pendiente','En curso'].includes(v(r,'Estado *'))).forEach(r=>{
+    t.push({_derived:true,
+      'Nombre Tarea *':'Resolver: '+(v(r,'Herramienta *','Herramienta')||'?'),
+      'Área *':v(r,'Area *','Área')||'','Descripcion':v(r,'Descripcion de la Dependencia *')||'',
+      'Tipo *':'Dependencia','Responsable *':'','Fecha Limite *':'','Estado *':v(r,'Estado *'),
+      'Prioridad *':'Media'});
+  });
+  return t;
+}
+function renderTareas(){
+  const all=[...DATA.tareas,...getDerivedTareas()];
+  document.getElementById('s-tar-total').textContent=all.length;
+  document.getElementById('s-tar-pendiente').textContent=all.filter(r=>v(r,'Estado *')==='Pendiente').length;
+  document.getElementById('s-tar-encurso').textContent=all.filter(r=>v(r,'Estado *')==='En curso').length;
+  document.getElementById('s-tar-completada').textContent=all.filter(r=>v(r,'Estado *')==='Completada').length;
+  document.getElementById('badge-tareas').textContent=all.filter(r=>['Pendiente','En curso'].includes(v(r,'Estado *'))).length;
+  filterTareas();
+}
+function filterTareas(){
+  const area=document.getElementById('filter-tar-area').value;
+  const estado=document.getElementById('filter-tar-estado').value;
+  const tipo=document.getElementById('filter-tar-tipo').value;
+  const prior=document.getElementById('filter-tar-prioridad').value;
+  const all=[...DATA.tareas,...getDerivedTareas()];
+  const rows=all.filter(r=>
+    (!area||v(r,'Área *','Area *','Área','Area')===area)&&
+    (!estado||v(r,'Estado *')===estado)&&
+    (!tipo||v(r,'Tipo *')===tipo)&&
+    (!prior||v(r,'Prioridad *')===prior)
+  );
+  const eC={Pendiente:'badge-amber','En curso':'badge-blue',Completada:'badge-green',Bloqueada:'badge-red'};
+  const pC={Alta:'badge-red',Media:'badge-amber',Baja:'badge-green'};
+  const tC={Manual:'badge-blue',Riesgo:'badge-red',Dependencia:'badge-amber'};
+  const tb=document.getElementById('tbody-tareas');
+  if(!rows.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei">✓</div>Sin tareas con estos filtros</div></td></tr>';return;}
+  tb.innerHTML=rows.map(r=>{
+    const nombre=v(r,'Nombre Tarea *','Nombre Tarea')||'—';
+    const area=v(r,'Área *','Area *','Área','Area')||'—';
+    const tipo=v(r,'Tipo *')||'Manual';
+    const estado=v(r,'Estado *')||'Pendiente';
+    const prior=v(r,'Prioridad *')||'—';
+    const resp=v(r,'Responsable *','Responsable')||'—';
+    const fecha=v(r,'Fecha Limite *','Fecha Límite *','Fecha Limite','Fecha Límite')||'—';
+    const autoBadge=r._derived?`<span style="font-size:9px;background:var(--bg4);color:var(--text3);padding:1px 6px;border-radius:3px;margin-left:5px;vertical-align:middle">Auto</span>`:'';
+    return `<tr>
+      <td class="td-name">${nombre}${autoBadge}</td>
+      <td>${areaDot(area)}${area}</td>
+      <td>${badge(tipo,tC[tipo]||'badge-gray')}</td>
+      <td>${badge(prior,pC[prior]||'badge-gray')}</td>
+      <td style="font-size:12px">${resp}</td>
+      <td style="font-family:var(--mono);font-size:12px">${fecha}</td>
+      <td>${badge(estado,eC[estado]||'badge-gray')}</td>
+    </tr>`;
+  }).join('');
+}
+async function saveNewTarea(){
+  const nombre=document.getElementById('tar-nombre').value.trim();
+  const status=document.getElementById('add-status-tareas');
+  if(!nombre){status.textContent='⚠ El nombre es obligatorio.';return;}
+  const data={
+    'Nombre Tarea *':nombre,
+    'Área *':document.getElementById('tar-area').value,
+    'Descripcion':document.getElementById('tar-desc').value,
+    'Tipo *':document.getElementById('tar-tipo').value,
+    'Prioridad *':document.getElementById('tar-prioridad').value,
+    'Responsable *':document.getElementById('tar-resp').value,
+    'Fecha Limite *':document.getElementById('tar-fecha').value,
+    'Estado *':document.getElementById('tar-estado').value
+  };
+  await _saveToSheet('btn-save-tar','add-status-tareas','Tareas',data,()=>toggleAddPanel('tareas'));
+}
 
 // ── KPIs ──
 function renderKPIs(){
