@@ -577,7 +577,27 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
   <!-- RIESGOS -->
   <div class="section" id="section-riesgos">
-    <div class="page-header"><div class="page-header-left"><h1>Registro de Riesgos</h1><p>Filtrable por herramienta y probabilidad.</p></div></div>
+    <div class="page-header">
+      <div class="page-header-left"><h1>Registro de Riesgos</h1><p>Filtrable por herramienta y probabilidad.</p></div>
+      <button class="btn btn-primary" onclick="toggleAddPanel('riesgos')">+ Añadir riesgo</button>
+    </div>
+    <div class="add-panel" id="add-panel-riesgos">
+      <div class="add-panel-title">Nuevo riesgo</div>
+      <div class="add-grid">
+        <div class="add-field"><label>Área *</label><select id="rie-area"><option value="Producto">Producto</option><option value="Marketing">Marketing</option><option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option></select></div>
+        <div class="add-field"><label>Herramienta *</label><input type="text" id="rie-herramienta" placeholder="Nombre de la herramienta"></div>
+        <div class="add-field full"><label>Descripción del Riesgo *</label><input type="text" id="rie-desc" placeholder="Describe el riesgo"></div>
+        <div class="add-field"><label>Probabilidad *</label><select id="rie-prob"><option value="Alta">Alta</option><option value="Media">Media</option><option value="Baja">Baja</option></select></div>
+        <div class="add-field"><label>Impacto *</label><select id="rie-impacto"><option value="Alto">Alto</option><option value="Medio">Medio</option><option value="Bajo">Bajo</option></select></div>
+        <div class="add-field full"><label>Mitigación *</label><input type="text" id="rie-mitigacion" placeholder="Acción de mitigación prevista"></div>
+        <div class="add-field"><label>Estado</label><select id="rie-estado"><option value="Abierto">Abierto</option><option value="Mitigado">Mitigado</option><option value="Cerrado">Cerrado</option></select></div>
+      </div>
+      <div class="add-actions">
+        <button class="btn btn-ghost" onclick="toggleAddPanel('riesgos')">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-riesgo" onclick="saveNewRiesgo()">Guardar en Sheet →</button>
+      </div>
+      <div id="add-status-riesgos" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
+    </div>
     <div class="filter-bar">
       <select class="filter-select" id="filter-riesgos-a" onchange="filterRiesgos()">
         <option value="">Todas las áreas</option>
@@ -599,7 +619,25 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
   <!-- DEPENDENCIAS -->
   <div class="section" id="section-dependencias">
-    <div class="page-header"><div class="page-header-left"><h1>Dependencias</h1><p>Filtrable por herramienta.</p></div></div>
+    <div class="page-header">
+      <div class="page-header-left"><h1>Dependencias</h1><p>Filtrable por herramienta.</p></div>
+      <button class="btn btn-primary" onclick="toggleAddPanel('dependencias')">+ Añadir dependencia</button>
+    </div>
+    <div class="add-panel" id="add-panel-dependencias">
+      <div class="add-panel-title">Nueva dependencia</div>
+      <div class="add-grid">
+        <div class="add-field"><label>Área *</label><select id="dep-area"><option value="Producto">Producto</option><option value="Marketing">Marketing</option><option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option></select></div>
+        <div class="add-field"><label>Herramienta *</label><input type="text" id="dep-herramienta" placeholder="Nombre de la herramienta"></div>
+        <div class="add-field full"><label>Descripción de la Dependencia *</label><input type="text" id="dep-desc" placeholder="Describe la dependencia"></div>
+        <div class="add-field"><label>Tipo *</label><select id="dep-tipo"><option value="Tecnica">Técnica</option><option value="Organizativa">Organizativa</option><option value="Presupuestaria">Presupuestaria</option><option value="Externa">Externa</option></select></div>
+        <div class="add-field"><label>Estado *</label><select id="dep-estado"><option value="Pendiente">Pendiente</option><option value="En curso">En curso</option><option value="Resuelta">Resuelta</option></select></div>
+      </div>
+      <div class="add-actions">
+        <button class="btn btn-ghost" onclick="toggleAddPanel('dependencias')">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-dep" onclick="saveNewDependencia()">Guardar en Sheet →</button>
+      </div>
+      <div id="add-status-dependencias" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
+    </div>
     <div class="filter-bar">
       <select class="filter-select" id="filter-dep-a" onchange="filterDependencias()">
         <option value="">Todas las áreas</option>
@@ -621,7 +659,26 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
   <!-- INVERSIÓN -->
   <div class="section" id="section-inversion">
-    <div class="page-header"><div class="page-header-left"><h1>Inversión</h1><p>Costes por herramienta y área.</p></div></div>
+    <div class="page-header">
+      <div class="page-header-left"><h1>Inversión</h1><p>Costes por herramienta y área.</p></div>
+      <button class="btn btn-primary" onclick="toggleAddPanel('inversion')">+ Añadir coste</button>
+    </div>
+    <div class="add-panel" id="add-panel-inversion">
+      <div class="add-panel-title">Nuevo registro de inversión</div>
+      <div class="add-grid">
+        <div class="add-field"><label>Área *</label><select id="inv-area"><option value="Producto">Producto</option><option value="Marketing">Marketing</option><option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option></select></div>
+        <div class="add-field"><label>Herramienta *</label><input type="text" id="inv-herramienta" placeholder="Nombre de la herramienta"></div>
+        <div class="add-field"><label>Coste Setup (EUR)</label><input type="number" id="inv-setup" placeholder="0" min="0"></div>
+        <div class="add-field"><label>Coste Anual (EUR)</label><input type="number" id="inv-anual" placeholder="0" min="0"></div>
+        <div class="add-field"><label>Tipo de Coste *</label><select id="inv-tipo"><option value="Licencia">Licencia</option><option value="Implementacion">Implementación</option><option value="Mantenimiento">Mantenimiento</option><option value="Formacion">Formación</option><option value="Otro">Otro</option></select></div>
+        <div class="add-field full"><label>Notas</label><input type="text" id="inv-notas" placeholder="Observaciones adicionales"></div>
+      </div>
+      <div class="add-actions">
+        <button class="btn btn-ghost" onclick="toggleAddPanel('inversion')">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-inv" onclick="saveNewInversion()">Guardar en Sheet →</button>
+      </div>
+      <div id="add-status-inversion" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
+    </div>
     <div class="inv-total" id="inv-totales"></div>
     <div class="filter-bar">
       <select class="filter-select" id="filter-inv-a" onchange="filterInversion()">
@@ -681,7 +738,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 const SHEET_ID = '1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
-let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycewrcnmB_L2GL2LWs8-4KtZLymVty2qCIb-5AKfoTjwhY2fX2hXXwFf0jdnVPbP8O6w/exec';
+let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9KhvIwbXDcUxTE9aYl4Z2UnMfHfa6FrMFR9fMQByMvOFeoh3JvtF_sBcaBbPzVtc_/exec';
 
 let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[] };
 let roadmapState = {};
@@ -850,10 +907,65 @@ function renderInventarioRows(rows){
   }).join('');
 }
 
-// ── ADD TOOL ──
-function toggleAddPanel(){
-  const p=document.getElementById('add-panel');
-  p.classList.toggle('open');
+// ── ADD PANELS ──
+function toggleAddPanel(section=''){
+  const id=section?'add-panel-'+section:'add-panel';
+  document.getElementById(id).classList.toggle('open');
+}
+async function _saveToSheet(btnId, statusId, sheetName, data, onSuccess){
+  const btn=document.getElementById(btnId);
+  const status=document.getElementById(statusId);
+  btn.textContent='Guardando...';btn.disabled=true;
+  try{
+    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({sheet:sheetName,...data})});
+    status.textContent='✓ Guardado en Google Sheet';status.style.color='var(--green)';
+    setTimeout(()=>{onSuccess();loadAll();status.textContent='';},1500);
+  }catch(e){
+    status.textContent='Error al guardar. Revisa el Apps Script URL.';status.style.color='var(--red)';
+  }
+  btn.textContent='Guardar en Sheet →';btn.disabled=false;
+}
+async function saveNewRiesgo(){
+  const herramienta=document.getElementById('rie-herramienta').value.trim();
+  const status=document.getElementById('add-status-riesgos');
+  if(!herramienta){status.textContent='⚠ La herramienta es obligatoria.';return;}
+  const data={
+    'Herramienta *':herramienta,
+    'Area *':document.getElementById('rie-area').value,
+    'Descripcion del Riesgo *':document.getElementById('rie-desc').value,
+    'Probabilidad *':document.getElementById('rie-prob').value,
+    'Impacto *':document.getElementById('rie-impacto').value,
+    'Mitigacion *':document.getElementById('rie-mitigacion').value,
+    'Estado':document.getElementById('rie-estado').value
+  };
+  await _saveToSheet('btn-save-riesgo','add-status-riesgos','Riesgos',data,()=>toggleAddPanel('riesgos'));
+}
+async function saveNewDependencia(){
+  const herramienta=document.getElementById('dep-herramienta').value.trim();
+  const status=document.getElementById('add-status-dependencias');
+  if(!herramienta){status.textContent='⚠ La herramienta es obligatoria.';return;}
+  const data={
+    'Herramienta *':herramienta,
+    'Area *':document.getElementById('dep-area').value,
+    'Descripcion de la Dependencia *':document.getElementById('dep-desc').value,
+    'Tipo *':document.getElementById('dep-tipo').value,
+    'Estado *':document.getElementById('dep-estado').value
+  };
+  await _saveToSheet('btn-save-dep','add-status-dependencias','Dependencias',data,()=>toggleAddPanel('dependencias'));
+}
+async function saveNewInversion(){
+  const herramienta=document.getElementById('inv-herramienta').value.trim();
+  const status=document.getElementById('add-status-inversion');
+  if(!herramienta){status.textContent='⚠ La herramienta es obligatoria.';return;}
+  const data={
+    'Herramienta *':herramienta,
+    'Area *':document.getElementById('inv-area').value,
+    'Coste Setup (EUR)':document.getElementById('inv-setup').value||'0',
+    'Coste Anual (EUR)':document.getElementById('inv-anual').value||'0',
+    'Tipo de Coste *':document.getElementById('inv-tipo').value,
+    'Notas':document.getElementById('inv-notas').value
+  };
+  await _saveToSheet('btn-save-inv','add-status-inversion','Inversion',data,()=>toggleAddPanel('inversion'));
 }
 async function saveNewTool(){
   const nombre=document.getElementById('add-nombre').value.trim();
@@ -1042,7 +1154,6 @@ function filterInversion(){
   document.getElementById('inv-totales').innerHTML=`
     <div class="inv-card"><div class="inv-label">Setup</div><div class="inv-value">€${ts.toLocaleString('es-ES')}</div></div>
     <div class="inv-card"><div class="inv-label">Anual</div><div class="inv-value">€${ta.toLocaleString('es-ES')}</div></div>
-    <div class="inv-card"><div class="inv-label">3 años</div><div class="inv-value">€${(ts+ta*3).toLocaleString('es-ES')}</div></div>
     <div class="inv-card"><div class="inv-label">Herramientas</div><div class="inv-value">${rows.length}</div></div>`;
   if(!rows.length){tb.innerHTML='<tr><td colspan="6"><div class="empty"><div class="ei">€</div>Sin datos de inversión</div></td></tr>';return;}
   tb.innerHTML=rows.map(r=>{
