@@ -612,6 +612,12 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <option>Alta</option><option>Media</option><option>Baja</option>
       </select>
     </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Total riesgos</div><div class="stat-value" id="s-rie-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Abierto</div><div class="stat-value" id="s-rie-abierto" style="color:var(--red)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Mitigado</div><div class="stat-value" id="s-rie-mitigado" style="color:var(--amber)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Cerrado</div><div class="stat-value" id="s-rie-cerrado" style="color:var(--green)">—</div></div>
+    </div>
     <div class="table-wrap"><table><thead><tr>
       <th>Herramienta</th><th>Área</th><th>Riesgo</th><th>Probabilidad</th><th>Impacto</th><th>Mitigación</th><th>Estado</th>
     </tr></thead><tbody id="tbody-riesgos"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
@@ -651,6 +657,12 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <option value="">Todos los tipos</option>
         <option>Tecnica</option><option>Organizativa</option><option>Presupuestaria</option><option>Externa</option>
       </select>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Total dependencias</div><div class="stat-value" id="s-dep-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pendiente</div><div class="stat-value" id="s-dep-pendiente" style="color:var(--amber)">—</div></div>
+      <div class="stat-card"><div class="stat-label">En curso</div><div class="stat-value" id="s-dep-encurso" style="color:var(--blue)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Resuelta</div><div class="stat-value" id="s-dep-resuelta" style="color:var(--green)">—</div></div>
     </div>
     <div class="table-wrap"><table><thead><tr>
       <th>Herramienta</th><th>Área</th><th>Descripción</th><th>Tipo</th><th>Estado</th>
@@ -722,6 +734,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <option value="Ejecucion">Ejecución</option>
         <option value="Adopcion">Adopción</option>
         <option value="Valor">Valor</option>
+        <option value="Gestion">Gestión</option>
       </select>
       <select class="filter-select" id="filter-kpi-f" onchange="filterKPIs()"><option value="">Todas las fases</option></select>
     </div>
@@ -1087,7 +1100,12 @@ function renderMatriz(){
 
 // ── RIESGOS ──
 function renderRiesgos(){
-  const hs=[...new Set(DATA.riesgos.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
+  const d=DATA.riesgos;
+  document.getElementById('s-rie-total').textContent=d.length;
+  document.getElementById('s-rie-abierto').textContent=d.filter(r=>v(r,'Estado')==='Abierto').length;
+  document.getElementById('s-rie-mitigado').textContent=d.filter(r=>v(r,'Estado')==='Mitigado').length;
+  document.getElementById('s-rie-cerrado').textContent=d.filter(r=>v(r,'Estado')==='Cerrado').length;
+  const hs=[...new Set(d.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
   document.getElementById('filter-riesgos-h').innerHTML='<option value="">Todas las herramientas</option>'+hs.map(h=>`<option>${h}</option>`).join('');
   filterRiesgos();
 }
@@ -1119,7 +1137,12 @@ function filterRiesgos(){
 
 // ── DEPENDENCIAS ──
 function renderDependencias(){
-  const hs=[...new Set(DATA.dependencias.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
+  const d=DATA.dependencias;
+  document.getElementById('s-dep-total').textContent=d.length;
+  document.getElementById('s-dep-pendiente').textContent=d.filter(r=>v(r,'Estado *')==='Pendiente').length;
+  document.getElementById('s-dep-encurso').textContent=d.filter(r=>v(r,'Estado *')==='En curso').length;
+  document.getElementById('s-dep-resuelta').textContent=d.filter(r=>v(r,'Estado *')==='Resuelta').length;
+  const hs=[...new Set(d.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
   document.getElementById('filter-dep-h').innerHTML='<option value="">Todas las herramientas</option>'+hs.map(h=>`<option>${h}</option>`).join('');
   filterDependencias();
 }
@@ -1257,7 +1280,9 @@ function filterKPIs(){
       return matchingPhases.some(p=>getPhaseAreas(p).includes(area));
     });
   }
-  const cats=[{key:'Ejecucion',label:'Ejecución'},{key:'Adopcion',label:'Adopción'},{key:'Valor',label:'Valor'}];
+  const knownLabels={Ejecucion:'Ejecución',Adopcion:'Adopción',Valor:'Valor',Gestion:'Gestión'};
+  const catKeys=[...new Set(rows.map(r=>(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[̀-ͯ]/g,'')).filter(Boolean))];
+  const cats=catKeys.map(key=>({key,label:knownLabels[key]||key}));
   const sC={['On Track']:'badge-green',['En Riesgo']:'badge-amber',['Off Track']:'badge-red',Completado:'badge-blue'};
   const cont=document.getElementById('kpis-content');
   if(!rows.length){cont.innerHTML='<div class="empty"><div class="ei">◈</div>Sin KPIs con estos filtros</div>';return;}
