@@ -419,7 +419,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <span class="topbar-title" id="topbar-title">Inventario de Herramientas</span>
     <div class="topbar-right">
       <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Actualizar</button>
-      <a href="https://docs.google.com/spreadsheets/d/1-g2MC6TAG9HXQXzMr3mMfH1b1G8kfeoP/edit" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
         <button class="btn btn-primary btn-sm">↗ Abrir Sheet</button>
       </a>
     </div>
@@ -437,7 +437,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
     <!-- ADD PANEL -->
     <div class="add-panel" id="add-panel">
-      <div class="add-panel-title">Nueva herramienta <span style="font-size:11px;color:var(--text3);font-weight:400">— El tipo se establece como "Nueva" por defecto</span></div>
+      <div class="add-panel-title">Nueva herramienta <span style="font-size:11px;color:var(--text3);font-weight:400">— Esfuerzo e impacto se ajustan desde la Matriz</span></div>
       <div class="add-grid">
         <div class="add-field">
           <label>Área *</label>
@@ -452,41 +452,13 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
           <label>Nombre *</label>
           <input type="text" id="add-nombre" placeholder="Nombre de la herramienta">
         </div>
-        <div class="add-field">
-          <label>Estado</label>
-          <select id="add-estado">
-            <option value="Evaluando">Evaluando</option>
-            <option value="Activa">Activa</option>
-            <option value="Descartada">Descartada</option>
-          </select>
-        </div>
         <div class="add-field full">
           <label>Descripción</label>
           <input type="text" id="add-desc" placeholder="Breve descripción de la herramienta">
         </div>
-        <div class="add-field">
-          <label>Esfuerzo (1–10)</label>
-          <input type="number" id="add-esf" min="1" max="10" placeholder="5">
-        </div>
-        <div class="add-field">
-          <label>Impacto (1–10)</label>
-          <input type="number" id="add-imp" min="1" max="10" placeholder="5">
-        </div>
-        <div class="add-field">
-          <label>Coste anual (€)</label>
-          <input type="number" id="add-coste" placeholder="0">
-        </div>
-        <div class="add-field">
-          <label>Responsable</label>
-          <input type="text" id="add-resp" placeholder="Nombre">
-        </div>
-        <div class="add-field">
-          <label>Link Doc Funcional</label>
-          <input type="url" id="add-doc" placeholder="https://...">
-        </div>
-        <div class="add-field">
-          <label>Link Drive</label>
-          <input type="url" id="add-drive" placeholder="https://...">
+        <div class="add-field full">
+          <label>Link Doc Funcional (Drive)</label>
+          <input type="url" id="add-doc" placeholder="https://docs.google.com/...">
         </div>
       </div>
       <div class="add-actions">
@@ -505,7 +477,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
     <div class="download-banner">
       <span class="download-banner-text">📥 Inventario completo disponible en Drive — incluye todas las herramientas evaluadas</span>
-      <a href="https://docs.google.com/spreadsheets/d/1QwTTi-rVaiNjpioSNcvSNqXZygxUj0Gr/edit" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
         <button class="btn btn-ghost btn-sm">↗ Abrir inventario completo</button>
       </a>
     </div>
@@ -608,6 +580,13 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <div class="section" id="section-riesgos">
     <div class="page-header"><div class="page-header-left"><h1>Registro de Riesgos</h1><p>Filtrable por herramienta y probabilidad.</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-riesgos-a" onchange="filterRiesgos()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-riesgos-h" onchange="filterRiesgos()"><option value="">Todas las herramientas</option></select>
       <select class="filter-select" id="filter-riesgos-p" onchange="filterRiesgos()">
         <option value="">Todas las probabilidades</option>
@@ -623,6 +602,13 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <div class="section" id="section-dependencias">
     <div class="page-header"><div class="page-header-left"><h1>Dependencias</h1><p>Filtrable por herramienta.</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-dep-a" onchange="filterDependencias()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-dep-h" onchange="filterDependencias()"><option value="">Todas las herramientas</option></select>
       <select class="filter-select" id="filter-dep-t" onchange="filterDependencias()">
         <option value="">Todos los tipos</option>
@@ -652,6 +638,15 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <!-- ROADMAP -->
   <div class="section" id="section-roadmap">
     <div class="page-header"><div class="page-header-left"><h1>Roadmap de Implementación</h1><p>Marca fases como completadas y añade comentarios de incidencias.</p></div></div>
+    <div class="filter-bar">
+      <select class="filter-select" id="filter-roadmap-area" onchange="renderRoadmap()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
+    </div>
     <div id="roadmap-content"><div class="loading"><div class="spinner"></div>Cargando roadmap...</div></div>
   </div>
 
@@ -659,6 +654,13 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <div class="section" id="section-kpis">
     <div class="page-header"><div class="page-header-left"><h1>Tracker de KPIs</h1><p>Ejecución · Adopción · Valor</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-kpi-a" onchange="filterKPIs()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-kpi-c" onchange="filterKPIs()">
         <option value="">Todas las categorías</option>
         <option value="Ejecucion">Ejecución</option>
@@ -677,7 +679,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 </div>
 
 <script>
-const SHEET_ID = '1-g2MC6TAG9HXQXzMr3mMfH1b1G8kfeoP';
+const SHEET_ID = '1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
 let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycewrcnmB_L2GL2LWs8-4KtZLymVty2qCIb-5AKfoTjwhY2fX2hXXwFf0jdnVPbP8O6w/exec';
@@ -849,25 +851,21 @@ async function saveNewTool(){
     id:'NEW-'+Date.now(),
     nombre, area,
     descripcion:document.getElementById('add-desc').value,
-    estado:document.getElementById('add-estado').value,
+    estado:'Evaluando',
     tipo:'Nueva',
-    esfuerzo:document.getElementById('add-esf').value||'',
-    impacto:document.getElementById('add-imp').value||'',
-    coste:document.getElementById('add-coste').value||'',
-    responsable:document.getElementById('add-resp').value||'',
+    esfuerzo:'',impacto:'',coste:'',responsable:'',
     linkDoc:document.getElementById('add-doc').value||'',
-    linkDrive:document.getElementById('add-drive').value||''
+    linkDrive:''
   };
   const btn=document.getElementById('btn-save-tool');
   const status=document.getElementById('add-status');
   if(!APPS_SCRIPT_URL){
-    // Local only until Apps Script URL is set
     DATA.inventario.push({
       'ID *':tool.id,'Nombre *':tool.nombre,'Area *':tool.area,
       'Descripcion':tool.descripcion,'Estado *':tool.estado,'Tipo *':tool.tipo,
-      'Esfuerzo (1-10)*':tool.esfuerzo,'Impacto (1-10)*':tool.impacto,
-      'Coste anual (EUR)':tool.coste,'Responsable':tool.responsable,
-      'Link Doc Funcional':tool.linkDoc,'Link Drive':tool.linkDrive
+      'Esfuerzo (1-10)*':'','Impacto (1-10)*':'',
+      'Coste anual (EUR)':'','Responsable':'',
+      'Link Doc Funcional':tool.linkDoc,'Link Drive':''
     });
     renderInventario();
     status.textContent='✓ Añadida localmente (configura Apps Script para guardar en Sheet)';
@@ -960,9 +958,10 @@ function renderRiesgos(){
   filterRiesgos();
 }
 function filterRiesgos(){
+  const a=document.getElementById('filter-riesgos-a').value;
   const h=document.getElementById('filter-riesgos-h').value;
   const p=document.getElementById('filter-riesgos-p').value;
-  const rows=DATA.riesgos.filter(r=>(!h||v(r,'Herramienta *','Herramienta')===h)&&(!p||v(r,'Probabilidad *','Probabilidad')===p));
+  const rows=DATA.riesgos.filter(r=>(!a||v(r,'Area *','Área')===a)&&(!h||v(r,'Herramienta *','Herramienta')===h)&&(!p||v(r,'Probabilidad *','Probabilidad')===p));
   const pC={Alta:'var(--red)',Media:'var(--amber)',Baja:'var(--green)'};
   const iC={Alto:'var(--red)',Medio:'var(--amber)',Bajo:'var(--green)'};
   const eC={Abierto:'badge-red',Mitigado:'badge-amber',Cerrado:'badge-green'};
@@ -991,9 +990,10 @@ function renderDependencias(){
   filterDependencias();
 }
 function filterDependencias(){
+  const a=document.getElementById('filter-dep-a').value;
   const h=document.getElementById('filter-dep-h').value;
   const t=document.getElementById('filter-dep-t').value;
-  const rows=DATA.dependencias.filter(r=>(!h||v(r,'Herramienta *','Herramienta')===h)&&(!t||v(r,'Tipo *')===t));
+  const rows=DATA.dependencias.filter(r=>(!a||v(r,'Area *','Área')===a)&&(!h||v(r,'Herramienta *','Herramienta')===h)&&(!t||v(r,'Tipo *')===t));
   const eC={Pendiente:'badge-amber','En curso':'badge-blue',Resuelta:'badge-green'};
   const tb=document.getElementById('tbody-dependencias');
   if(!rows.length){tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">⇄</div>Sin dependencias registradas</div></td></tr>';return;}
@@ -1038,10 +1038,25 @@ function filterInversion(){
 }
 
 // ── ROADMAP ──
+function getPhaseAreas(phase){
+  const toolNames=(v(phase,'Herramientas Incluidas')||'').split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  if(!toolNames.length) return [];
+  return DATA.inventario
+    .filter(r=>toolNames.includes((v(r,'Nombre *','Nombre')||'').toLowerCase()))
+    .map(r=>v(r,'Area *','Área'));
+}
 function renderRoadmap(){
+  const areaFilter=document.getElementById('filter-roadmap-area')?.value||'';
   const cont=document.getElementById('roadmap-content');
-  if(!DATA.roadmap.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
-  cont.innerHTML=DATA.roadmap.map((r,i)=>{
+  let phases=DATA.roadmap;
+  if(areaFilter){
+    phases=phases.filter(r=>{
+      const areas=getPhaseAreas(r);
+      return areas.includes(areaFilter);
+    });
+  }
+  if(!phases.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
+  cont.innerHTML=phases.map((r,i)=>{
     const id=v(r,'ID Fase')||i;
     const nombre=v(r,'Nombre Fase *','Nombre Fase')||'Fase '+(i+1);
     const obj=v(r,'Objetivo *','Objetivo')||'—';
@@ -1090,12 +1105,20 @@ function renderKPIs(){
   filterKPIs();
 }
 function filterKPIs(){
+  const area=document.getElementById('filter-kpi-a').value;
   const cat=document.getElementById('filter-kpi-c').value;
   const fase=document.getElementById('filter-kpi-f').value;
-  const rows=DATA.kpis.filter(r=>{
+  let rows=DATA.kpis.filter(r=>{
     const rc=(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     return(!cat||rc===cat)&&(!fase||v(r,'Fase *','Fase')===fase);
   });
+  if(area){
+    rows=rows.filter(r=>{
+      const faseName=v(r,'Fase *','Fase');
+      const matchingPhases=DATA.roadmap.filter(p=>v(p,'Nombre Fase *','Nombre Fase')===faseName||v(p,'ID Fase')===faseName);
+      return matchingPhases.some(p=>getPhaseAreas(p).includes(area));
+    });
+  }
   const cats=[{key:'Ejecucion',label:'Ejecución'},{key:'Adopcion',label:'Adopción'},{key:'Valor',label:'Valor'}];
   const sC={['On Track']:'badge-green',['En Riesgo']:'badge-amber',['Off Track']:'badge-red',Completado:'badge-blue'};
   const cont=document.getElementById('kpis-content');
