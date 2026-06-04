@@ -732,6 +732,10 @@ async function loadAll() {
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
       fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
     ]);
+    prod.forEach(r=>r['_area']='Producto');
+    mkt.forEach(r=>r['_area']='Marketing');
+    ops.forEach(r=>r['_area']='Operaciones');
+    com.forEach(r=>r['_area']='Comercial');
     DATA.inventario=[...prod,...mkt,...ops,...com].filter(r=>v(r,'Nombre *','Nombre'));
     DATA.riesgos=rie.filter(r=>v(r,'Herramienta *','Herramienta')||v(r,'Descripcion del Riesgo *','Descripción del Riesgo *'));
     DATA.dependencias=dep.filter(r=>v(r,'Herramienta *','Herramienta'));
@@ -894,32 +898,29 @@ async function saveNewTool(){
 function renderMatriz(){
   const af=document.getElementById('filter-matriz-area')?.value||'';
   const rows=DATA.inventario.filter(r=>{
-    const a=v(r,'Area *','Área');
-    const esf=parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||0);
-    const imp=parseFloat(v(r,'Impacto (1-10)*','Impacto (1-10)')||0);
-    return(!af||a===af)&&(esf>0||imp>0);
+    const a=r['_area']||v(r,'Area *','Área');
+    return(!af||a===af);
   });
   const canvas=document.getElementById('matrix-nodes');
   if(!rows.length){
-    canvas.innerHTML='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text3);font-size:13px">Sin datos de esfuerzo/impacto definidos</div>';
+    canvas.innerHTML='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text3);font-size:13px">Sin herramientas para mostrar</div>';
     document.getElementById('cuadrante-list').innerHTML='';
     return;
   }
   const areaColor={Producto:'#2C6E9A',Marketing:'#88B318',Operaciones:'#B07D0A',Comercial:'#8B44AD'};
   canvas.innerHTML=rows.map((r,i)=>{
-    const esf=Math.max(1,Math.min(10,parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||5)));
-    const imp=Math.max(1,Math.min(10,parseFloat(v(r,'Impacto (1-10)*','Impacto (1-10)')||5)));
-    // X: esfuerzo bajo=left, alto=right. Y: impacto alto=top, bajo=bottom
-    const xPct=((esf-1)/9)*86+7;
-    const yPct=100-(((imp-1)/9)*86+7);
-    const area=v(r,'Area *','Área')||'';
+    const esf=Math.max(0,Math.min(10,parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||0)));
+    const imp=Math.max(0,Math.min(10,parseFloat(v(r,'Impacto (1-10)*','Impacto (1-10)')||0)));
+    const xPct=(esf/10)*86+7;
+    const yPct=100-((imp/10)*86+7);
+    const area=r['_area']||v(r,'Area *','Área')||'';
     const nombre=v(r,'Nombre *','Nombre')||'?';
-    const col=areaColor[area]||'#88B318';
+    const col=areaColor[area]||'#888';
     const short=nombre.length>15?nombre.substring(0,13)+'…':nombre;
     return `<div class="matrix-node" style="left:${xPct}%;top:${yPct}%;background:${col}" data-idx="${i}" title="${nombre}: Esfuerzo ${esf} · Impacto ${imp}">${short}</div>`;
   }).join('');
 
-  // Draggable
+  // Draggable — updates DATA on release
   canvas.querySelectorAll('.matrix-node').forEach(node=>{
     let drag=false,ox,oy,cx,cy;
     node.addEventListener('mousedown',e=>{
@@ -934,13 +935,26 @@ function renderMatriz(){
       node.style.left=Math.max(2,Math.min(98,cx+((e.clientX-ox)/pw)*100))+'%';
       node.style.top=Math.max(2,Math.min(98,cy+((e.clientY-oy)/ph)*100))+'%';
     });
-    document.addEventListener('mouseup',()=>{drag=false;node.style.cursor='grab';});
+    document.addEventListener('mouseup',()=>{
+      if(!drag)return;
+      drag=false;node.style.cursor='grab';
+      const xPct=parseFloat(node.style.left);
+      const yPct=parseFloat(node.style.top);
+      const newEsf=Math.round(Math.max(0,Math.min(10,((xPct-7)/86)*10)));
+      const newImp=Math.round(Math.max(0,Math.min(10,((100-yPct-7)/86)*10)));
+      const r=rows[parseInt(node.dataset.idx)];
+      if(r){
+        r['Esfuerzo (1-10)*']=String(newEsf);r['Esfuerzo (1-10)']=String(newEsf);
+        r['Impacto (1-10)*']=String(newImp);r['Impacto (1-10)']=String(newImp);
+        node.title=`${v(r,'Nombre *','Nombre')}: Esfuerzo ${newEsf} · Impacto ${newImp}`;
+      }
+    });
   });
 
   const q={estrategico:0,quickwin:0,evaluar:0,bajo:0};
   rows.forEach(r=>{
-    const esf=parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||5);
-    const imp=parseFloat(v(r,'Impacto (1-10)*','Impacto (1-10)')||5);
+    const esf=parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||0);
+    const imp=parseFloat(v(r,'Impacto (1-10)*','Impacto (1-10)')||0);
     if(esf<=5&&imp>=5)q.estrategico++;
     else if(esf>5&&imp>=5)q.quickwin++;
     else if(esf<=5&&imp<5)q.evaluar++;
@@ -1043,11 +1057,15 @@ function filterInversion(){
 
 // ── ROADMAP ──
 function getPhaseAreas(phase){
+  // Direct area field takes priority
+  const direct=v(phase,'Área *','Area *','Área','Area');
+  if(direct) return [direct];
+  // Fallback: cross-reference via tools included
   const toolNames=(v(phase,'Herramientas Incluidas')||'').split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
   if(!toolNames.length) return [];
   return DATA.inventario
     .filter(r=>toolNames.includes((v(r,'Nombre *','Nombre')||'').toLowerCase()))
-    .map(r=>v(r,'Area *','Área'));
+    .map(r=>r['_area']||v(r,'Area *','Área'));
 }
 function renderRoadmap(){
   const areaFilter=document.getElementById('filter-roadmap-area')?.value||'';
@@ -1068,6 +1086,7 @@ function renderRoadmap(){
     const ff=v(r,'Fecha Fin *','Fecha Fin')||'';
     const resp=v(r,'Responsable *','Responsable')||'—';
     const estado=v(r,'Estado *','Estado')||'Pendiente';
+    const areaFase=v(r,'Área *','Area *','Área','Area')||'';
     const pct=parseInt(v(r,'% Completado')||0)||0;
     const tools=v(r,'Herramientas Incluidas')||'';
     const comentBase=v(r,'Comentarios / Incidencias')||'';
@@ -1077,7 +1096,7 @@ function renderRoadmap(){
     return `<div class="roadmap-phase ${done?'completed':''} ${estado==='Bloqueada'?'blocked':''}" id="phase-${id}">
       <div class="phase-header">
         <div>
-          <div class="phase-name">${nombre}</div>
+          <div class="phase-name">${nombre}${areaFase?` <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:6px">${areaFase}</span>`:''}</div>
           <div class="phase-meta">${fi}${fi&&ff?' → ':''}${ff} · ${resp}</div>
         </div>
         <div class="phase-right">
