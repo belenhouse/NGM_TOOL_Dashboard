@@ -732,8 +732,12 @@ async function loadAll() {
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
       fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
     ]);
-    DATA.inventario=[...prod,...mkt,...ops,...com];
-    DATA.riesgos=rie; DATA.dependencias=dep; DATA.inversion=inv; DATA.roadmap=road; DATA.kpis=kpi;
+    DATA.inventario=[...prod,...mkt,...ops,...com].filter(r=>v(r,'Nombre *','Nombre'));
+    DATA.riesgos=rie.filter(r=>v(r,'Herramienta *','Herramienta')||v(r,'Descripcion del Riesgo *','Descripción del Riesgo *'));
+    DATA.dependencias=dep.filter(r=>v(r,'Herramienta *','Herramienta'));
+    DATA.inversion=inv.filter(r=>v(r,'Herramienta *','Herramienta'));
+    DATA.roadmap=road.filter(r=>v(r,'Nombre Fase *','Nombre Fase'));
+    DATA.kpis=kpi.filter(r=>v(r,'Nombre KPI *','Nombre KPI'));
     renderAll();
     document.getElementById('last-update-time').textContent='Actualizado '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   } catch(e){ document.getElementById('last-update-time').textContent='Error al cargar'; }
