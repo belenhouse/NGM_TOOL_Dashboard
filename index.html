@@ -369,7 +369,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <span class="icon">⬡</span> Listado completo
         <span class="nav-badge" id="badge-inventario">—</span>
       </div>
-      <div class="nav-item" onclick="showSection('inventario',this);window.open('https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link','_blank')">
+      <div class="nav-item" onclick="showSection('inventario',this);window.open('https://docs.google.com/spreadsheets/d/1fCWzaEKInbdje7euIvJ71M6VXZXa6iq_FAbeUkPOUP6M3c3JIp8cahkB/edit','_blank')">
         <span class="icon">↗</span> Inventario completo Drive
       </div>
     </div>
@@ -419,7 +419,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <span class="topbar-title" id="topbar-title">Inventario de Herramientas</span>
     <div class="topbar-right">
       <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Actualizar</button>
-      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1fCWzaEKInbdje7euIvJ71M6VXZXa6iq_FAbeUkPOUP6M3c3JIp8cahkB/edit" target="_blank">
         <button class="btn btn-primary btn-sm">↗ Abrir Sheet</button>
       </a>
     </div>
@@ -477,7 +477,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
     <div class="download-banner">
       <span class="download-banner-text">📥 Inventario completo disponible en Drive — incluye todas las herramientas evaluadas</span>
-      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1fCWzaEKInbdje7euIvJ71M6VXZXa6iq_FAbeUkPOUP6M3c3JIp8cahkB/edit" target="_blank">
         <button class="btn btn-ghost btn-sm">↗ Abrir inventario completo</button>
       </a>
     </div>
@@ -679,8 +679,8 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 </div>
 
 <script>
-const PUB_KEY = '2PACX-1vSsC0E6Cq85beHh-ZUNJzlM1PlnvJROe5MKjNcoh9JYb72qRMh0rl0SlxOvoRDIjygykDQKHObZ_j7f';
-const BASE = `https://docs.google.com/spreadsheets/d/e/${PUB_KEY}/gviz/tq?tqx=out:csv&sheet=`;
+const SHEET_ID = '1fCWzaEKInbdje7euIvJ71M6VXZXa6iq_FAbeUkPOUP6M3c3JIp8cahkB';
+const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
 let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycewrcnmB_L2GL2LWs8-4KtZLymVty2qCIb-5AKfoTjwhY2fX2hXXwFf0jdnVPbP8O6w/exec';
 
