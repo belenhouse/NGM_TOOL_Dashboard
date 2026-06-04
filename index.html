@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operating Intelligence Dashboard</title>
+<title>Project Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -355,8 +355,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 <!-- SIDEBAR -->
 <div id="sidebar">
   <div class="logo">
-    <div class="logo-tag">Operating Intelligence</div>
-    <div class="logo-name">OI Dashboard</div>
+    <div class="logo-name">Project Planner</div>
     <div class="logo-sub">Tool Strategy Dashboard</div>
   </div>
   <nav>
@@ -805,7 +804,7 @@ function filterInventario(){
   const tipo=document.getElementById('filter-tipo').value;
   const rows=DATA.inventario.filter(r=>
     (!search||Object.values(r).some(x=>x.toLowerCase().includes(search)))&&
-    (!area||v(r,'Area *','Área')===area)&&
+    (!area||(r['_area']||v(r,'Area *','Área'))===area)&&
     (!estado||v(r,'Estado *')===estado)&&
     (!tipo||v(r,'Tipo *')===tipo)
   );
@@ -816,7 +815,7 @@ function renderInventarioRows(rows){
   if(!rows.length){tb.innerHTML='<tr><td colspan="10"><div class="empty"><div class="ei">⬡</div>Sin resultados</div></td></tr>';return;}
   tb.innerHTML=rows.map(r=>{
     const nombre=v(r,'Nombre *','Nombre')||'—';
-    const area=v(r,'Area *','Área')||'—';
+    const area=r['_area']||v(r,'Area *','Área')||'—';
     const id=v(r,'ID *','ID')||'';
     const estado=v(r,'Estado *');
     const tipo=v(r,'Tipo *');
