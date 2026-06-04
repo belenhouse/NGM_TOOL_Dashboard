@@ -37,8 +37,8 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; font-size: 14px; line-height: 1.5; }
- 
-/* ── SIDEBAR ── */
+
+/* ── SIDEBAR  ── */
 #sidebar {
   width: var(--sidebar-w); min-height: 100vh; background: var(--bg2);
   border-right: 1px solid var(--border); position: fixed; top: 0; left: 0;
@@ -48,9 +48,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .logo-tag { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
 .logo-name { font-size: 20px; font-weight: 800; color: var(--green); letter-spacing: -0.5px; }
 .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
- 
+
 nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
- 
+
 /* Block headers — big and clear */
 .nav-block {
   margin-bottom: 6px;
@@ -69,7 +69,7 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
   background: var(--green); color: white; padding: 2px 7px; border-radius: 4px;
 }
 .nav-block-title { font-size: 12px; font-weight: 700; color: var(--text2); }
- 
+
 .nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 14px; cursor: pointer; color: var(--text2);
@@ -86,7 +86,7 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
   border-radius: 10px; border: 1px solid var(--border2);
 }
 .nav-item.active .nav-badge { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
- 
+
 .sidebar-footer {
   padding: 14px 16px; border-top: 1px solid var(--border);
   font-size: 11px; color: var(--text3);
@@ -94,10 +94,10 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 .last-update { display: flex; align-items: center; gap: 6px; }
 .pulse { width: 6px; height: 6px; background: var(--green); border-radius: 50%; flex-shrink:0; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
- 
+
 /* ── MAIN ── */
 #main { margin-left: var(--sidebar-w); flex: 1; }
- 
+
 .topbar {
   position: sticky; top: 0; z-index: 50;
   background: var(--bg2); border-bottom: 1px solid var(--border);
@@ -107,7 +107,7 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 }
 .topbar-title { font-size: 14px; font-weight: 700; color: var(--text); }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
- 
+
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 14px; border-radius: var(--radius); font-size: 12px;
@@ -120,16 +120,16 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 .btn-ghost:hover { background: var(--bg3); color: var(--text); }
 .btn-sm { padding: 5px 11px; font-size: 11px; }
 .btn-success { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
- 
+
 /* ── SECTIONS ── */
 .section { display: none; padding: 28px; animation: fadeIn .2s ease; }
 .section.active { display: block; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
- 
+
 .page-header { margin-bottom: 22px; display: flex; align-items: flex-start; justify-content: space-between; }
 .page-header-left h1 { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
 .page-header-left p { font-size: 13px; color: var(--text3); margin-top: 3px; }
- 
+
 /* ── STAT CARDS ── */
 .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
 .stat-card {
@@ -141,7 +141,7 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 .stat-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; font-weight: 600; }
 .stat-value { font-size: 30px; font-weight: 800; color: var(--green); font-family: var(--mono); letter-spacing: -1px; line-height: 1; }
 .stat-sub { font-size: 11px; color: var(--text3); margin-top: 5px; }
- 
+
 /* ── FILTER BAR ── */
 .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .filter-select, .filter-input {
@@ -153,7 +153,7 @@ nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
 .filter-select:focus, .filter-input:focus { border-color: var(--green); }
 .filter-input { min-width: 220px; }
 .filter-input::placeholder { color: var(--text3); }
- 
+
 /* ── TABLE ── */
 .table-wrap {
   background: var(--surface); border: 1px solid var(--border);
@@ -171,7 +171,7 @@ tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: var(--bg3); }
 tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-align: middle; }
 .td-name { font-weight: 600; color: var(--text); }
- 
+
 /* ── BADGES ── */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
@@ -183,14 +183,14 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .badge-red { background: #C0392B15; color: var(--red); border: 1px solid #C0392B30; }
 .badge-blue { background: #2C6E9A15; color: var(--blue); border: 1px solid #2C6E9A30; }
 .badge-gray { background: var(--bg3); color: var(--text3); border: 1px solid var(--border2); }
- 
+
 /* ── AREA DOTS ── */
 .area-dot { display: inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 .area-Producto { background: #2C6E9A; }
 .area-Marketing { background: #88B318; }
 .area-Operaciones { background: #B07D0A; }
 .area-Comercial { background: #8B44AD; }
- 
+
 /* ── ADD TOOL PANEL ── */
 .add-panel {
   background: var(--bg2); border: 1px solid var(--green-border);
@@ -210,7 +210,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .add-field input:focus, .add-field select:focus, .add-field textarea:focus { border-color: var(--green); }
 .add-field.full { grid-column: 1/-1; }
 .add-actions { display: flex; gap: 8px; margin-top: 14px; justify-content: flex-end; }
- 
+
 /* ── DOWNLOAD BANNER ── */
 .download-banner {
   background: var(--green-bg); border: 1px solid var(--green-border);
@@ -219,7 +219,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   margin-bottom: 16px;
 }
 .download-banner-text { font-size: 12px; color: var(--text2); }
- 
+
 /* ── MATRIX ── */
 .matrix-wrap {
   background: var(--bg2); border: 1px solid var(--border);
@@ -259,7 +259,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .matrix-x-bar { display: flex; justify-content: space-between; padding: 6px 0 0 0; }
 .matrix-x-bar span { font-size: 9px; color: var(--text3); font-weight:600; letter-spacing:.5px; }
 .matrix-x-title { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-top: 4px; }
- 
+
 .matrix-node {
   position: absolute; transform: translate(-50%, -50%);
   border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: 700;
@@ -273,7 +273,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .matrix-node.area-Marketing-node { background: #88B318; }
 .matrix-node.area-Operaciones-node { background: #B07D0A; }
 .matrix-node.area-Comercial-node { background: #8B44AD; }
- 
+
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .card {
   background: var(--bg2); border: 1px solid var(--border);
@@ -286,7 +286,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg3);
 }
- 
+
 /* ── ROADMAP ── */
 .roadmap-phase {
   background: var(--bg2); border: 1px solid var(--border);
@@ -314,27 +314,27 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   resize: none; transition: border-color .15s;
 }
 .comment-input:focus { border-color: var(--green); }
- 
+
 /* ── KPIs ── */
 .kpi-category { margin-bottom: 22px; }
 .kpi-cat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .kpi-cat-name { font-size: 13px; font-weight: 700; color: var(--text); }
 .kpi-cat-bar { flex: 1; height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
 .kpi-cat-fill { height: 100%; background: var(--green); border-radius: 2px; }
- 
+
 /* ── INV TOTALS ── */
 .inv-total { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .inv-card { flex: 1; min-width: 130px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
 .inv-label { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
 .inv-value { font-size: 20px; font-weight: 700; color: var(--green); font-family: var(--mono); }
- 
+
 /* ── LOADING / EMPTY ── */
 .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px; color: var(--text3); gap: 12px; }
 .spinner { width: 24px; height: 24px; border: 2px solid var(--border2); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .empty { text-align: center; padding: 50px; color: var(--text3); font-size: 13px; }
 .empty .ei { font-size: 28px; margin-bottom: 8px; opacity: .4; }
- 
+
 /* ── MODAL ── */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 200; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
@@ -343,7 +343,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .modal-row { margin-bottom: 12px; }
 .modal-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
 .modal-val { font-size: 13px; color: var(--text2); }
- 
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg3); }
@@ -351,7 +351,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 </style>
 </head>
 <body>
- 
+
 <!-- SIDEBAR -->
 <div id="sidebar">
   <div class="logo">
@@ -369,7 +369,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <span class="icon">⬡</span> Listado completo
         <span class="nav-badge" id="badge-inventario">—</span>
       </div>
-      <div class="nav-item" onclick="showSection('inventario',this);window.open('https://docs.google.com/spreadsheets/d/1QwTTi-rVaiNjpioSNcvSNqXZygxUj0Gr/edit','_blank')">
+      <div class="nav-item" onclick="showSection('inventario',this);window.open('https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link','_blank')">
         <span class="icon">↗</span> Inventario completo Drive
       </div>
     </div>
@@ -412,19 +412,19 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     </div>
   </div>
 </div>
- 
+
 <!-- MAIN -->
 <div id="main">
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Inventario de Herramientas</span>
     <div class="topbar-right">
       <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Actualizar</button>
-      <a href="https://docs.google.com/spreadsheets/d/1-g2MC6TAG9HXQXzMr3mMfH1b1G8kfeoP/edit" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
         <button class="btn btn-primary btn-sm">↗ Abrir Sheet</button>
       </a>
     </div>
   </div>
- 
+
   <!-- INVENTARIO -->
   <div class="section active" id="section-inventario">
     <div class="page-header">
@@ -434,10 +434,10 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       </div>
       <button class="btn btn-primary" onclick="toggleAddPanel()">+ Añadir herramienta</button>
     </div>
- 
+
     <!-- ADD PANEL -->
     <div class="add-panel" id="add-panel">
-      <div class="add-panel-title">Nueva herramienta <span style="font-size:11px;color:var(--text3);font-weight:400">— El tipo se establece como "Nueva" por defecto</span></div>
+      <div class="add-panel-title">Nueva herramienta <span style="font-size:11px;color:var(--text3);font-weight:400">— Esfuerzo e impacto se ajustan desde la Matriz</span></div>
       <div class="add-grid">
         <div class="add-field">
           <label>Área *</label>
@@ -452,29 +452,13 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
           <label>Nombre *</label>
           <input type="text" id="add-nombre" placeholder="Nombre de la herramienta">
         </div>
-        <div class="add-field">
-          <label>Estado</label>
-          <select id="add-estado">
-            <option value="Evaluando">Evaluando</option>
-            <option value="Activa">Activa</option>
-            <option value="Descartada">Descartada</option>
-          </select>
-        </div>
         <div class="add-field full">
           <label>Descripción</label>
           <input type="text" id="add-desc" placeholder="Breve descripción de la herramienta">
         </div>
-        <div class="add-field">
-          <label>Responsable</label>
-          <input type="text" id="add-resp" placeholder="Nombre">
-        </div>
-        <div class="add-field">
-          <label>Link Doc Funcional</label>
-          <input type="url" id="add-doc" placeholder="https://...">
-        </div>
-        <div class="add-field">
-          <label>Link Drive</label>
-          <input type="url" id="add-drive" placeholder="https://...">
+        <div class="add-field full">
+          <label>Link Doc Funcional (Drive)</label>
+          <input type="url" id="add-doc" placeholder="https://docs.google.com/...">
         </div>
       </div>
       <div class="add-actions">
@@ -483,21 +467,21 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       </div>
       <div id="add-status" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right"></div>
     </div>
- 
+
     <div class="stat-row">
       <div class="stat-card"><div class="stat-label">Total herramientas</div><div class="stat-value" id="s-total">—</div></div>
       <div class="stat-card"><div class="stat-label">Activas</div><div class="stat-value" id="s-activas">—</div></div>
       <div class="stat-card"><div class="stat-label">En evaluación</div><div class="stat-value" id="s-eval">—</div></div>
       <div class="stat-card"><div class="stat-label">Descartadas</div><div class="stat-value" id="s-desc">—</div></div>
     </div>
- 
+
     <div class="download-banner">
       <span class="download-banner-text">📥 Inventario completo disponible en Drive — incluye todas las herramientas evaluadas</span>
-      <a href="https://docs.google.com/spreadsheets/d/1QwTTi-rVaiNjpioSNcvSNqXZygxUj0Gr/edit" target="_blank">
+      <a href="https://docs.google.com/spreadsheets/d/1LLRQo3O1WIufwetGv8rLywb4vHxT7GsFl0H_49edtTA/edit?usp=drive_link" target="_blank">
         <button class="btn btn-ghost btn-sm">↗ Abrir inventario completo</button>
       </a>
     </div>
- 
+
     <div class="filter-bar">
       <input class="filter-input" id="search-inv" placeholder="🔍  Buscar herramienta..." oninput="filterInventario()">
       <select class="filter-select" id="filter-area" onchange="filterInventario()">
@@ -514,7 +498,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <option value="">Todos los tipos</option>
       </select>
     </div>
- 
+
     <div class="table-wrap">
       <table id="tabla-inventario">
         <thead><tr>
@@ -528,7 +512,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       </table>
     </div>
   </div>
- 
+
   <!-- MATRIZ -->
   <div class="section" id="section-matriz">
     <div class="page-header">
@@ -591,11 +575,18 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       </div>
     </div>
   </div>
- 
+
   <!-- RIESGOS -->
   <div class="section" id="section-riesgos">
     <div class="page-header"><div class="page-header-left"><h1>Registro de Riesgos</h1><p>Filtrable por herramienta y probabilidad.</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-riesgos-a" onchange="filterRiesgos()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-riesgos-h" onchange="filterRiesgos()"><option value="">Todas las herramientas</option></select>
       <select class="filter-select" id="filter-riesgos-p" onchange="filterRiesgos()">
         <option value="">Todas las probabilidades</option>
@@ -606,11 +597,18 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       <th>Herramienta</th><th>Área</th><th>Riesgo</th><th>Probabilidad</th><th>Impacto</th><th>Mitigación</th><th>Estado</th>
     </tr></thead><tbody id="tbody-riesgos"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
   </div>
- 
+
   <!-- DEPENDENCIAS -->
   <div class="section" id="section-dependencias">
     <div class="page-header"><div class="page-header-left"><h1>Dependencias</h1><p>Filtrable por herramienta.</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-dep-a" onchange="filterDependencias()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-dep-h" onchange="filterDependencias()"><option value="">Todas las herramientas</option></select>
       <select class="filter-select" id="filter-dep-t" onchange="filterDependencias()">
         <option value="">Todos los tipos</option>
@@ -621,7 +619,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       <th>Herramienta</th><th>Área</th><th>Descripción</th><th>Tipo</th><th>Estado</th>
     </tr></thead><tbody id="tbody-dependencias"><tr><td colspan="5"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
   </div>
- 
+
   <!-- INVERSIÓN -->
   <div class="section" id="section-inversion">
     <div class="page-header"><div class="page-header-left"><h1>Inversión</h1><p>Costes por herramienta y área.</p></div></div>
@@ -636,17 +634,33 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       <th>Herramienta</th><th>Área</th><th>Setup (€)</th><th>Anual (€)</th><th>Tipo</th><th>Notas</th>
     </tr></thead><tbody id="tbody-inversion"><tr><td colspan="6"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
   </div>
- 
+
   <!-- ROADMAP -->
   <div class="section" id="section-roadmap">
     <div class="page-header"><div class="page-header-left"><h1>Roadmap de Implementación</h1><p>Marca fases como completadas y añade comentarios de incidencias.</p></div></div>
+    <div class="filter-bar">
+      <select class="filter-select" id="filter-roadmap-area" onchange="renderRoadmap()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
+    </div>
     <div id="roadmap-content"><div class="loading"><div class="spinner"></div>Cargando roadmap...</div></div>
   </div>
- 
+
   <!-- KPIs -->
   <div class="section" id="section-kpis">
     <div class="page-header"><div class="page-header-left"><h1>Tracker de KPIs</h1><p>Ejecución · Adopción · Valor</p></div></div>
     <div class="filter-bar">
+      <select class="filter-select" id="filter-kpi-a" onchange="filterKPIs()">
+        <option value="">Todas las áreas</option>
+        <option value="Producto">Producto</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Comercial">Comercial</option>
+      </select>
       <select class="filter-select" id="filter-kpi-c" onchange="filterKPIs()">
         <option value="">Todas las categorías</option>
         <option value="Ejecucion">Ejecución</option>
@@ -658,21 +672,21 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div id="kpis-content"><div class="loading"><div class="spinner"></div>Cargando KPIs...</div></div>
   </div>
 </div>
- 
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modal-content"></div>
 </div>
- 
+
 <script>
 const SHEET_ID = '1fCWzaEKInbdje7euIvJ71M6VXZXa6iq_FAbeUkPOUP6M3c3JIp8cahkB';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
 let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycewrcnmB_L2GL2LWs8-4KtZLymVty2qCIb-5AKfoTjwhY2fX2hXXwFf0jdnVPbP8O6w/exec';
- 
+
 let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[] };
 let roadmapState = {};
- 
+
 // ── NAV ──
 function showSection(id, el) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -683,7 +697,7 @@ function showSection(id, el) {
   document.getElementById('topbar-title').textContent = titles[id]||id;
   if(id==='matriz') renderMatriz();
 }
- 
+
 // ── CSV ──
 async function fetchSheet(sheet) {
   const r = await fetch(BASE+encodeURIComponent(sheet));
@@ -710,7 +724,7 @@ function parseCSVLine(line) {
   }
   res.push(cur); return res;
 }
- 
+
 // ── LOAD ──
 async function loadAll() {
   try {
@@ -718,14 +732,18 @@ async function loadAll() {
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
       fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
     ]);
-    DATA.inventario=[...prod,...mkt,...ops,...com];
-    DATA.riesgos=rie; DATA.dependencias=dep; DATA.inversion=inv; DATA.roadmap=road; DATA.kpis=kpi;
+    DATA.inventario=[...prod,...mkt,...ops,...com].filter(r=>v(r,'Nombre *','Nombre'));
+    DATA.riesgos=rie.filter(r=>v(r,'Herramienta *','Herramienta')||v(r,'Descripcion del Riesgo *','Descripción del Riesgo *'));
+    DATA.dependencias=dep.filter(r=>v(r,'Herramienta *','Herramienta'));
+    DATA.inversion=inv.filter(r=>v(r,'Herramienta *','Herramienta'));
+    DATA.roadmap=road.filter(r=>v(r,'Nombre Fase *','Nombre Fase'));
+    DATA.kpis=kpi.filter(r=>v(r,'Nombre KPI *','Nombre KPI'));
     renderAll();
     document.getElementById('last-update-time').textContent='Actualizado '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   } catch(e){ document.getElementById('last-update-time').textContent='Error al cargar'; }
 }
 function refreshAll(){ loadAll(); }
- 
+
 function renderAll(){
   renderInventario(); renderRiesgos(); renderDependencias();
   renderInversion(); renderRoadmap(); renderKPIs(); updateBadges();
@@ -734,7 +752,7 @@ function updateBadges(){
   document.getElementById('badge-inventario').textContent=DATA.inventario.length;
   document.getElementById('badge-riesgos').textContent=DATA.riesgos.length;
 }
- 
+
 // ── HELPERS ──
 function v(r,...keys){ for(const k of keys){if(r[k]&&r[k].trim())return r[k].trim();}return ''; }
 function badgeEstado(e){
@@ -759,7 +777,7 @@ function miniBar(val,color){
     <span style="font-size:11px;font-family:var(--mono);color:var(--text3)">${val}</span>
   </div>`;
 }
- 
+
 // ── INVENTARIO ──
 function renderInventario(){
   const d=DATA.inventario;
@@ -823,7 +841,7 @@ function renderInventarioRows(rows){
     </tr>`;
   }).join('');
 }
- 
+
 // ── ADD TOOL ──
 function toggleAddPanel(){
   const p=document.getElementById('add-panel');
@@ -837,25 +855,21 @@ async function saveNewTool(){
     id:'NEW-'+Date.now(),
     nombre, area,
     descripcion:document.getElementById('add-desc').value,
-    estado:document.getElementById('add-estado').value,
+    estado:'Evaluando',
     tipo:'Nueva',
-    esfuerzo:document.getElementById('add-esf').value||'',
-    impacto:document.getElementById('add-imp').value||'',
-    coste:document.getElementById('add-coste').value||'',
-    responsable:document.getElementById('add-resp').value||'',
+    esfuerzo:'',impacto:'',coste:'',responsable:'',
     linkDoc:document.getElementById('add-doc').value||'',
-    linkDrive:document.getElementById('add-drive').value||''
+    linkDrive:''
   };
   const btn=document.getElementById('btn-save-tool');
   const status=document.getElementById('add-status');
   if(!APPS_SCRIPT_URL){
-    // Local only until Apps Script URL is set
     DATA.inventario.push({
       'ID *':tool.id,'Nombre *':tool.nombre,'Area *':tool.area,
       'Descripcion':tool.descripcion,'Estado *':tool.estado,'Tipo *':tool.tipo,
-      'Esfuerzo (1-10)*':tool.esfuerzo,'Impacto (1-10)*':tool.impacto,
-      'Coste anual (EUR)':tool.coste,'Responsable':tool.responsable,
-      'Link Doc Funcional':tool.linkDoc,'Link Drive':tool.linkDrive
+      'Esfuerzo (1-10)*':'','Impacto (1-10)*':'',
+      'Coste anual (EUR)':'','Responsable':'',
+      'Link Doc Funcional':tool.linkDoc,'Link Drive':''
     });
     renderInventario();
     status.textContent='✓ Añadida localmente (configura Apps Script para guardar en Sheet)';
@@ -875,7 +889,7 @@ async function saveNewTool(){
   }
   btn.textContent='Guardar en Sheet →'; btn.disabled=false;
 }
- 
+
 // ── MATRIZ ──
 function renderMatriz(){
   const af=document.getElementById('filter-matriz-area')?.value||'';
@@ -904,7 +918,7 @@ function renderMatriz(){
     const short=nombre.length>15?nombre.substring(0,13)+'…':nombre;
     return `<div class="matrix-node" style="left:${xPct}%;top:${yPct}%;background:${col}" data-idx="${i}" title="${nombre}: Esfuerzo ${esf} · Impacto ${imp}">${short}</div>`;
   }).join('');
- 
+
   // Draggable
   canvas.querySelectorAll('.matrix-node').forEach(node=>{
     let drag=false,ox,oy,cx,cy;
@@ -922,7 +936,7 @@ function renderMatriz(){
     });
     document.addEventListener('mouseup',()=>{drag=false;node.style.cursor='grab';});
   });
- 
+
   const q={estrategico:0,quickwin:0,evaluar:0,bajo:0};
   rows.forEach(r=>{
     const esf=parseFloat(v(r,'Esfuerzo (1-10)*','Esfuerzo (1-10)')||5);
@@ -940,7 +954,7 @@ function renderMatriz(){
       <span style="font-family:var(--mono);font-size:13px;color:var(--text2)">${n}</span>
     </div>`).join('');
 }
- 
+
 // ── RIESGOS ──
 function renderRiesgos(){
   const hs=[...new Set(DATA.riesgos.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
@@ -948,9 +962,10 @@ function renderRiesgos(){
   filterRiesgos();
 }
 function filterRiesgos(){
+  const a=document.getElementById('filter-riesgos-a').value;
   const h=document.getElementById('filter-riesgos-h').value;
   const p=document.getElementById('filter-riesgos-p').value;
-  const rows=DATA.riesgos.filter(r=>(!h||v(r,'Herramienta *','Herramienta')===h)&&(!p||v(r,'Probabilidad *','Probabilidad')===p));
+  const rows=DATA.riesgos.filter(r=>(!a||v(r,'Area *','Área')===a)&&(!h||v(r,'Herramienta *','Herramienta')===h)&&(!p||v(r,'Probabilidad *','Probabilidad')===p));
   const pC={Alta:'var(--red)',Media:'var(--amber)',Baja:'var(--green)'};
   const iC={Alto:'var(--red)',Medio:'var(--amber)',Bajo:'var(--green)'};
   const eC={Abierto:'badge-red',Mitigado:'badge-amber',Cerrado:'badge-green'};
@@ -971,7 +986,7 @@ function filterRiesgos(){
     </tr>`;
   }).join('');
 }
- 
+
 // ── DEPENDENCIAS ──
 function renderDependencias(){
   const hs=[...new Set(DATA.dependencias.map(r=>v(r,'Herramienta *','Herramienta')).filter(Boolean))];
@@ -979,9 +994,10 @@ function renderDependencias(){
   filterDependencias();
 }
 function filterDependencias(){
+  const a=document.getElementById('filter-dep-a').value;
   const h=document.getElementById('filter-dep-h').value;
   const t=document.getElementById('filter-dep-t').value;
-  const rows=DATA.dependencias.filter(r=>(!h||v(r,'Herramienta *','Herramienta')===h)&&(!t||v(r,'Tipo *')===t));
+  const rows=DATA.dependencias.filter(r=>(!a||v(r,'Area *','Área')===a)&&(!h||v(r,'Herramienta *','Herramienta')===h)&&(!t||v(r,'Tipo *')===t));
   const eC={Pendiente:'badge-amber','En curso':'badge-blue',Resuelta:'badge-green'};
   const tb=document.getElementById('tbody-dependencias');
   if(!rows.length){tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">⇄</div>Sin dependencias registradas</div></td></tr>';return;}
@@ -996,7 +1012,7 @@ function filterDependencias(){
     </tr>`;
   }).join('');
 }
- 
+
 // ── INVERSIÓN ──
 function renderInversion(){ filterInversion(); }
 function filterInversion(){
@@ -1024,12 +1040,27 @@ function filterInversion(){
     </tr>`;
   }).join('');
 }
- 
+
 // ── ROADMAP ──
+function getPhaseAreas(phase){
+  const toolNames=(v(phase,'Herramientas Incluidas')||'').split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  if(!toolNames.length) return [];
+  return DATA.inventario
+    .filter(r=>toolNames.includes((v(r,'Nombre *','Nombre')||'').toLowerCase()))
+    .map(r=>v(r,'Area *','Área'));
+}
 function renderRoadmap(){
+  const areaFilter=document.getElementById('filter-roadmap-area')?.value||'';
   const cont=document.getElementById('roadmap-content');
-  if(!DATA.roadmap.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
-  cont.innerHTML=DATA.roadmap.map((r,i)=>{
+  let phases=DATA.roadmap;
+  if(areaFilter){
+    phases=phases.filter(r=>{
+      const areas=getPhaseAreas(r);
+      return areas.includes(areaFilter);
+    });
+  }
+  if(!phases.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
+  cont.innerHTML=phases.map((r,i)=>{
     const id=v(r,'ID Fase')||i;
     const nombre=v(r,'Nombre Fase *','Nombre Fase')||'Fase '+(i+1);
     const obj=v(r,'Objetivo *','Objetivo')||'—';
@@ -1070,7 +1101,7 @@ function renderRoadmap(){
 }
 function toggleComplete(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].completed=!roadmapState[id].completed;renderRoadmap();}
 function saveComment(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].comment=document.getElementById('comment-'+id).value;renderRoadmap();}
- 
+
 // ── KPIs ──
 function renderKPIs(){
   const fases=[...new Set(DATA.kpis.map(r=>v(r,'Fase *','Fase')).filter(Boolean))];
@@ -1078,12 +1109,20 @@ function renderKPIs(){
   filterKPIs();
 }
 function filterKPIs(){
+  const area=document.getElementById('filter-kpi-a').value;
   const cat=document.getElementById('filter-kpi-c').value;
   const fase=document.getElementById('filter-kpi-f').value;
-  const rows=DATA.kpis.filter(r=>{
+  let rows=DATA.kpis.filter(r=>{
     const rc=(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     return(!cat||rc===cat)&&(!fase||v(r,'Fase *','Fase')===fase);
   });
+  if(area){
+    rows=rows.filter(r=>{
+      const faseName=v(r,'Fase *','Fase');
+      const matchingPhases=DATA.roadmap.filter(p=>v(p,'Nombre Fase *','Nombre Fase')===faseName||v(p,'ID Fase')===faseName);
+      return matchingPhases.some(p=>getPhaseAreas(p).includes(area));
+    });
+  }
   const cats=[{key:'Ejecucion',label:'Ejecución'},{key:'Adopcion',label:'Adopción'},{key:'Valor',label:'Valor'}];
   const sC={['On Track']:'badge-green',['En Riesgo']:'badge-amber',['Off Track']:'badge-red',Completado:'badge-blue'};
   const cont=document.getElementById('kpis-content');
@@ -1115,7 +1154,7 @@ function filterKPIs(){
     </div>`;
   }).join('');
 }
- 
+
 // ── MODAL ──
 function showDetalle(r){
   const nombre=v(r,'Nombre *','Nombre')||'—';
@@ -1139,7 +1178,7 @@ function showDetalle(r){
   document.getElementById('modal-overlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
- 
+
 loadAll();
 setInterval(loadAll, 5*60*1000);
 </script>
