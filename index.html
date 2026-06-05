@@ -771,13 +771,6 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <div class="section" id="section-kpis">
     <div class="page-header"><div class="page-header-left"><h1>Tracker de KPIs</h1><p>Ejecución · Adopción · Valor</p></div></div>
     <div class="filter-bar">
-      <select class="filter-select" id="filter-kpi-a" onchange="filterKPIs()">
-        <option value="">Todas las áreas</option>
-        <option value="Producto">Producto</option>
-        <option value="Marketing">Marketing</option>
-        <option value="Operaciones">Operaciones</option>
-        <option value="Comercial">Comercial</option>
-      </select>
       <select class="filter-select" id="filter-kpi-c" onchange="filterKPIs()">
         <option value="">Todas las categorías</option>
         <option value="Ejecucion">Ejecución</option>
@@ -1367,31 +1360,21 @@ function renderKPIs(){
   filterKPIs();
 }
 function filterKPIs(){
-  const area=document.getElementById('filter-kpi-a').value;
   const cat=document.getElementById('filter-kpi-c').value;
   const fase=document.getElementById('filter-kpi-f').value;
-  let rows=DATA.kpis.filter(r=>{
-    const rc=(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    return(!cat||rc===cat)&&(!fase||v(r,'Fase *','Fase')===fase);
-  });
-  if(area){
-    rows=rows.filter(r=>{
-      const faseName=v(r,'Fase *','Fase');
-      const matchingPhases=DATA.roadmap.filter(p=>v(p,'Nombre Fase *','Nombre Fase')===faseName||v(p,'ID Fase')===faseName);
-      return matchingPhases.some(p=>getPhaseAreas(p).includes(area));
-    });
-  }
-  const knownLabels={Ejecucion:'Ejecución',Adopcion:'Adopción',Valor:'Valor',Gestion:'Gestión'};
-  const catKeys=[...new Set(DATA.kpis.map(r=>v(r,'Categoria *','Categoría *')).filter(Boolean))];
-
-  const cats=catKeys.map(key=>({key,label:knownLabels[key]||key}));
-
-  const sC={['On Track']:'badge-green',['En Riesgo']:'badge-amber',['Off Track']:'badge-red',Completado:'badge-blue'};
+  const rows=DATA.kpis.filter(r=>
+    (!cat||v(r,'Categoria *','Categoría *')===cat)&&
+    (!fase||v(r,'Fase *','Fase')===fase)
+  );
+  const cats=[
+    {key:'Ejecucion',label:'Ejecución'},{key:'Adopcion',label:'Adopción'},
+    {key:'Valor',label:'Valor'},{key:'Gestion',label:'Gestión'}
+  ];
+  const sC={'On Track':'badge-green','En Riesgo':'badge-amber','Off Track':'badge-red',Completado:'badge-blue'};
   const cont=document.getElementById('kpis-content');
   if(!rows.length){cont.innerHTML='<div class="empty"><div class="ei">◈</div>Sin KPIs con estos filtros</div>';return;}
   cont.innerHTML=cats.map(({key,label})=>{
     const cr=rows.filter(r=>v(r,'Categoria *','Categoría *')===key);
-
     if(!cr.length)return'';
     const ot=cr.filter(r=>v(r,'Estado')==='On Track').length;
     return `<div class="kpi-category">
