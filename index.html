@@ -850,7 +850,7 @@ async function loadAll() {
   try {
     const [prod,mkt,ops,com,rie,dep,inv,road,kpi] = await Promise.all([
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
-      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs','A3:Z')
+      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
     ]);
     let tar=[]; try{ tar=await fetchSheet('Tareas','A3:Z'); }catch(e){}
     prod.forEach(r=>r['_area']='Producto');
