@@ -816,19 +816,33 @@ async function fetchSheet(sheet, range) {
   return parseCSV(await r.text());
 }
 function parseCSV(text) {
-  const lines = text.split('\n').filter(l=>l.trim());
+  // Split into logical rows respecting quoted cells with embedded newlines
+  const lines=[];
+  let cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'){
+      if(inQ&&text[i+1]==='"'){cur+='""';i++;continue;}
+      inQ=!inQ;cur+=c;
+    } else if(c==='\r'){
+      // skip
+    } else if(c==='\n'){
+      if(inQ){cur+=' ';}  // embedded newline inside cell → space
+      else{if(cur.trim())lines.push(cur);cur='';}
+    } else {cur+=c;}
+  }
+  if(cur.trim())lines.push(cur);
   if(lines.length<2) return [];
   // Find header row: first line with multiple non-empty cells AND containing '*'
-  // (rejects single-cell title/legend rows that may also contain *)
   let headerIdx=0;
   for(let i=0;i<Math.min(5,lines.length);i++){
     const cells=parseCSVLine(lines[i]);
     const filled=cells.filter(c=>c.trim()).length;
     if(filled>1&&lines[i].includes('*')){headerIdx=i;break;}
   }
-  const headers = parseCSVLine(lines[headerIdx]);
+  const headers=parseCSVLine(lines[headerIdx]);
   return lines.slice(headerIdx+1).map(line=>{
-    const vals = parseCSVLine(line);
+    const vals=parseCSVLine(line);
     const obj={};
     headers.forEach((h,i)=>obj[h.trim()]=(vals[i]||'').trim());
     return obj;
