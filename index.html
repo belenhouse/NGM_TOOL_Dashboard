@@ -790,7 +790,8 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 </div>
 
 <script>
-const BASE = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSsC0E6Cq85beHh-ZUNJzlM1PlnvJROe5MKjNcoh9JYb72qRMh0rl0SlxOvoRDIjygykDQKHObZ_j7f/gviz/tq?tqx=out:csv&sheet=`;
+const SHEET_ID = '1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M';
+const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
 let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqobfEoE-Owlmgd8EWn_BH547wYnl1auUbF_fSmkc65tqgw_1U4LTO4cpOBebsDzR5UQ/exec';
 
@@ -809,8 +810,9 @@ function showSection(id, el) {
 }
 
 // ── CSV ──
-async function fetchSheet(sheet) {
-  const r = await fetch(BASE+encodeURIComponent(sheet));
+async function fetchSheet(sheet, range) {
+  const url = BASE+encodeURIComponent(sheet)+(range?'&range='+range:'');
+  const r = await fetch(url);
   return parseCSV(await r.text());
 }
 function parseCSV(text) {
@@ -848,9 +850,9 @@ async function loadAll() {
   try {
     const [prod,mkt,ops,com,rie,dep,inv,road,kpi] = await Promise.all([
       fetchSheet('Producto'),fetchSheet('Marketing'),fetchSheet('Operaciones'),fetchSheet('Comercial'),
-      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs')
+      fetchSheet('Riesgos'),fetchSheet('Dependencias'),fetchSheet('Inversion'),fetchSheet('Roadmap'),fetchSheet('KPIs','A3:Z')
     ]);
-    let tar=[]; try{ tar=await fetchSheet('Tareas'); }catch(e){}
+    let tar=[]; try{ tar=await fetchSheet('Tareas','A3:Z'); }catch(e){}
     prod.forEach(r=>r['_area']='Producto');
     mkt.forEach(r=>r['_area']='Marketing');
     ops.forEach(r=>r['_area']='Operaciones');
