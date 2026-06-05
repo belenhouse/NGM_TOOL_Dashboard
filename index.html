@@ -710,15 +710,6 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
   <!-- ROADMAP -->
   <div class="section" id="section-roadmap">
     <div class="page-header"><div class="page-header-left"><h1>Roadmap de Implementación</h1><p>Marca fases como completadas y añade comentarios de incidencias.</p></div></div>
-    <div class="filter-bar">
-      <select class="filter-select" id="filter-roadmap-area" onchange="renderRoadmap()">
-        <option value="">Todas las áreas</option>
-        <option value="Producto">Producto</option>
-        <option value="Marketing">Marketing</option>
-        <option value="Operaciones">Operaciones</option>
-        <option value="Comercial">Comercial</option>
-      </select>
-    </div>
     <div id="roadmap-content"><div class="loading"><div class="spinner"></div>Cargando roadmap...</div></div>
   </div>
 
@@ -809,7 +800,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 const SHEET_ID = '1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=`;
 // Replace with your Apps Script URL once deployed:
-let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVW60zCXDuuY8knQmyyj07bUjsgN7-22uQqPeR7RVaEpm5_Kt7qEUgheIMaL_Kir7IoQ/exec';
+let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqobfEoE-Owlmgd8EWn_BH547wYnl1auUbF_fSmkc65tqgw_1U4LTO4cpOBebsDzR5UQ/exec';
 
 let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[], tareas:[] };
 let roadmapState = {};
@@ -833,10 +824,13 @@ async function fetchSheet(sheet) {
 function parseCSV(text) {
   const lines = text.split('\n').filter(l=>l.trim());
   if(lines.length<2) return [];
-  // Find header row: first line containing '*' (all real field names use it)
+  // Find header row: first line with multiple non-empty cells AND containing '*'
+  // (rejects single-cell title/legend rows that may also contain *)
   let headerIdx=0;
   for(let i=0;i<Math.min(5,lines.length);i++){
-    if(lines[i].includes('*')){headerIdx=i;break;}
+    const cells=parseCSVLine(lines[i]);
+    const filled=cells.filter(c=>c.trim()).length;
+    if(filled>1&&lines[i].includes('*')){headerIdx=i;break;}
   }
   const headers = parseCSVLine(lines[headerIdx]);
   return lines.slice(headerIdx+1).map(line=>{
@@ -1266,15 +1260,8 @@ function getPhaseAreas(phase){
     .map(r=>r['_area']||v(r,'Area *','Área'));
 }
 function renderRoadmap(){
-  const areaFilter=document.getElementById('filter-roadmap-area')?.value||'';
   const cont=document.getElementById('roadmap-content');
-  let phases=DATA.roadmap;
-  if(areaFilter){
-    phases=phases.filter(r=>{
-      const areas=getPhaseAreas(r);
-      return areas.includes(areaFilter);
-    });
-  }
+  const phases=DATA.roadmap;
   if(!phases.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
   cont.innerHTML=phases.map((r,i)=>{
     const id=v(r,'ID Fase')||i;
@@ -1287,8 +1274,6 @@ function renderRoadmap(){
     const areaFase=v(r,'Área *','Area *','Área','Area')||'';
     const pct=parseInt(v(r,'% Completado')||0)||0;
     const tools=v(r,'Herramientas Incluidas')||'';
-    const comentBase=v(r,'Comentarios / Incidencias')||'';
-    const saved=roadmapState[id]?.comment??comentBase;
     const done=roadmapState[id]?.completed||(estado==='Completada');
     const eC={Completada:'badge-green','En Progreso':'badge-blue',Bloqueada:'badge-red',Pendiente:'badge-gray'};
     return `<div class="roadmap-phase ${done?'completed':''} ${estado==='Bloqueada'?'blocked':''}" id="phase-${id}">
@@ -1306,18 +1291,12 @@ function renderRoadmap(){
       </div>
       <div style="font-size:13px;color:var(--text2)">${obj}</div>
       ${tools?`<div class="phase-tools">${tools.split(',').map(t=>`${badge(t.trim(),'badge-gray')}`).join(' ')}</div>`:''}
-      <div class="progress-bar"><div class="progress-fill" style="width:${done?100:pct}%"></div></div>
-      <div style="font-size:11px;color:var(--text3);margin-top:3px;text-align:right">${done?100:pct}% completado</div>
-      ${saved?`<div class="phase-comment">💬 ${saved}</div>`:''}
-      <textarea class="comment-input" id="comment-${id}" rows="2" placeholder="Añadir comentario o incidencia...">${saved}</textarea>
-      <div style="display:flex;justify-content:flex-end;margin-top:6px">
-        <button class="btn btn-ghost btn-sm" onclick="saveComment('${id}')">Guardar comentario</button>
-      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;text-align:right">${pct}% completado</div>
     </div>`;
   }).join('');
 }
 function toggleComplete(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].completed=!roadmapState[id].completed;renderRoadmap();}
-function saveComment(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].comment=document.getElementById('comment-'+id).value;renderRoadmap();}
 
 // ── TAREAS ──
 function renderTareas(){
@@ -1403,13 +1382,16 @@ function filterKPIs(){
     });
   }
   const knownLabels={Ejecucion:'Ejecución',Adopcion:'Adopción',Valor:'Valor',Gestion:'Gestión'};
-  const catKeys=[...new Set(DATA.kpis.map(r=>(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[̀-ͯ]/g,'')).filter(Boolean))];
+  const catKeys=[...new Set(DATA.kpis.map(r=>v(r,'Categoria *','Categoría *')).filter(Boolean))];
+
   const cats=catKeys.map(key=>({key,label:knownLabels[key]||key}));
+
   const sC={['On Track']:'badge-green',['En Riesgo']:'badge-amber',['Off Track']:'badge-red',Completado:'badge-blue'};
   const cont=document.getElementById('kpis-content');
   if(!rows.length){cont.innerHTML='<div class="empty"><div class="ei">◈</div>Sin KPIs con estos filtros</div>';return;}
   cont.innerHTML=cats.map(({key,label})=>{
-    const cr=rows.filter(r=>(v(r,'Categoria *','Categoría *')||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')===key);
+    const cr=rows.filter(r=>v(r,'Categoria *','Categoría *')===key);
+
     if(!cr.length)return'';
     const ot=cr.filter(r=>v(r,'Estado')==='On Track').length;
     return `<div class="kpi-category">
