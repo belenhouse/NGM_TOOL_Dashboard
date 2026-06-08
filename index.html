@@ -886,7 +886,7 @@ function showSection(id, el) {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
   if(el) el.classList.add('active');
-  const titles = {inventario:'Inventario de Herramientas',matriz:'Matriz Esfuerzo · Impacto',riesgos:'Registro de Riesgos',dependencias:'Dependencias',inversion:'Inversión',roadmap:'Roadmap',tareas:'Tareas',kpis:'KPIs'};
+  const titles = {inventario:'Inventario de Herramientas',matriz:'Matriz Esfuerzo · Impacto',riesgos:'Registro de Riesgos',dependencias:'Dependencias',inversion:'Inversión',roadmap:'Roadmap',tareas:'Tareas',kpis:'KPIs','gantt-producto':'Project Plan · Producto','gantt-marketing':'Project Plan · Marketing','gantt-operaciones':'Project Plan · Operaciones','gantt-comercial':'Project Plan · Comercial'};
   document.getElementById('topbar-title').textContent = titles[id]||id;
   if(id==='matriz') renderMatriz();
 }
@@ -1550,16 +1550,29 @@ function _xmlEsc(s) {
 const PP_PHASE_COLORS = ['#5B8DB8','#1B6B5E','#2D8E74','#4DAB5A','#88B318'];
 
 function _getPhaseDurations() {
-  const sorted = DATA.roadmap
-    .filter(p => v(p,'ID Fase'))
-    .sort((a,b) => (v(a,'ID Fase')||'').localeCompare(v(b,'ID Fase')||''));
-  const result = [{ id:'F-000', name:'Revisión conjunta funcionales', duration:14 }];
-  sorted.forEach(p => {
+  const result = [{ id:'F-000', name:'Revisión conjunta funcionales', duration:14, description:'Alineación conjunta con funcionales de cada área' }];
+  const _pid  = p => v(p,'ID Fase')||v(p,'ID Fase *')||v(p,'ID *','ID');
+  const _pname = p => v(p,'Nombre Fase *','Nombre Fase');
+  const _pdesc = p => v(p,'Objetivo *','Objetivo');
+  const roadPhases = DATA.roadmap
+    .filter(p => _pid(p) || _pname(p))
+    .sort((a,b) => (_pid(a)||_pname(a)||'').localeCompare(_pid(b)||_pname(b)||''));
+  roadPhases.forEach(p => {
+    const id = _pid(p) || ('F-00' + result.length);
     const fi = _parseGanttDate(v(p,'Fecha Inicio *','Fecha Inicio'));
     const ff = _parseGanttDate(v(p,'Fecha Fin *','Fecha Fin'));
-    const dur = (fi && ff) ? Math.max(7, Math.round((ff.getTime()-fi.getTime())/86400000)) : 30;
-    result.push({ id:v(p,'ID Fase'), name:v(p,'Nombre Fase *','Nombre Fase')||v(p,'ID Fase'), duration:dur });
+    const dur = (fi && ff && ff.getTime() > fi.getTime())
+      ? Math.max(7, Math.round((ff.getTime()-fi.getTime())/86400000))
+      : 30;
+    result.push({ id, name:_pname(p)||id, duration:dur, description:_pdesc(p) });
   });
+  // Fallback: si el roadmap no se ha cargado todavía, usar duraciones conocidas
+  if (result.length === 1) {
+    result.push({ id:'F-001', name:'Definición Funcional',      duration:22,  description:'Requisitos funcionales y técnicos detallados' });
+    result.push({ id:'F-002', name:'Validación Técnica',        duration:14,  description:'Pruebas de integración y viabilidad técnica' });
+    result.push({ id:'F-003', name:'Implementación',            duration:108, description:'Despliegue, configuración y puesta en marcha' });
+    result.push({ id:'F-004', name:'Adopción y Seguimiento',    duration:42,  description:'Formación, monitorización y consolidación' });
+  }
   return result;
 }
 
@@ -1711,13 +1724,18 @@ function renderProjectPlan(area, wrapId) {
   svg += `<line x1="${LW}" y1="${HH}" x2="${LW}" y2="${H}" stroke="#B8BBA8" stroke-width="1.5"/>`;
   svg += '</svg>';
 
-  const legendItems = phases.map((p,i) =>
-    `<span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:${PP_PHASE_COLORS[i]};border-radius:3px;width:12px;height:12px"></span><b style="margin-right:2px">${p.id}:</b>${_xmlEsc(p.name)}</span>`
-  ).join('');
+  const legendItems = phases.map((p,i) => `
+    <div style="display:flex;align-items:flex-start;gap:8px;min-width:220px;max-width:360px">
+      <span style="flex-shrink:0;margin-top:3px;width:11px;height:11px;border-radius:3px;background:${PP_PHASE_COLORS[i]};display:inline-block"></span>
+      <div style="line-height:1.35">
+        <div style="font-size:11px;font-weight:700;color:var(--text)">${_xmlEsc(p.id)} &nbsp;·&nbsp; ${_xmlEsc(p.name)}</div>
+        ${p.description ? `<div style="font-size:10px;color:var(--text3);margin-top:1px">${_xmlEsc(p.description)}</div>` : ''}
+      </div>
+    </div>`).join('');
 
   wrap.innerHTML = `
-    <div class="gantt-legend" style="flex-wrap:wrap;gap:8px 20px;font-size:11px">
-      <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;align-self:center">Fases:</span>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 28px;padding:14px 18px 12px;background:var(--bg2);border-radius:8px;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="width:100%;font-size:9px;color:var(--text3);font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:2px">Fases del proyecto</div>
       ${legendItems}
     </div>
     <div class="gantt-chart-scroll">${svg}</div>`;
