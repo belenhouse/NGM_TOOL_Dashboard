@@ -988,7 +988,7 @@ async function loadAll() {
     DATA.inversion=inv.filter(r=>v(r,'Herramienta *','Herramienta'));
     DATA.roadmap=road.filter(r=>v(r,'Nombre Fase *','Nombre Fase'));
     DATA.kpis=kpi.filter(r=>v(r,'Nombre KPI *','Nombre KPI'));
-    DATA.tareas=tar.filter(r=>v(r,'Nombre Tarea *','Nombre Tarea'));
+    DATA.tareas=tar.filter(r=>v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea'));
     renderAll();
     document.getElementById('last-update-time').textContent='Actualizado '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   } catch(e){ document.getElementById('last-update-time').textContent='Error al cargar'; }
@@ -1445,7 +1445,7 @@ function filterTareas(){
   const tb=document.getElementById('tbody-tareas');
   if(!rows.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei">✓</div>Sin tareas con estos filtros</div></td></tr>';return;}
   tb.innerHTML=rows.map(r=>{
-    const nombre=v(r,'Nombre Tarea *','Nombre Tarea')||'—';
+    const nombre=v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea')||'—';
     const rArea=v(r,'Área *','Area *','Área','Area')||'—';
     const tipo=v(r,'Tipo *')||'—';
     const estado=v(r,'Estado *')||'Pendiente';
@@ -1468,7 +1468,7 @@ async function saveNewTarea(){
   const status=document.getElementById('add-status-tareas');
   if(!nombre){status.textContent='⚠ El nombre es obligatorio.';return;}
   const data={
-    'Nombre Tarea *':nombre,
+    'Herramienta *':nombre,
     'Área *':document.getElementById('tar-area').value,
     'Descripcion':document.getElementById('tar-desc').value,
     'Tipo *':document.getElementById('tar-tipo').value,
@@ -1655,7 +1655,7 @@ function renderGantt(area, chartId) {
   // Task rows
   parsed.forEach(({r, s: ts, e: te}, i) => {
     const rowY = HH + PV + i * RH;
-    const nombre = v(r,'Nombre Tarea *','Nombre Tarea') || '—';
+    const nombre = v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea') || '—';
     const resp = v(r,'Responsable *','Responsable') || '';
     const estado = v(r,'Estado *') || 'Pendiente';
     const col = statusColor[estado] || '#9AA88C';
