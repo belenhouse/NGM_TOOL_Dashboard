@@ -363,6 +363,73 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .gantt-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); font-weight: 600; }
 .gantt-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 .gantt-chart-scroll { overflow-x: auto; }
+
+/* ── MOBILE HAMBURGER BUTTON (hidden on desktop) ── */
+#menu-btn {
+  display: none; background: none; border: none; cursor: pointer;
+  padding: 6px 8px; color: var(--text2); font-size: 20px; line-height: 1;
+  border-radius: var(--radius); transition: background .15s;
+}
+#menu-btn:hover { background: var(--bg3); }
+
+/* ── SIDEBAR OVERLAY (mobile only) ── */
+#sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.35); z-index: 99;
+}
+#sidebar-overlay.open { display: block; }
+
+/* ── RESPONSIVE: iPhone and small screens ── */
+@media (max-width: 768px) {
+  /* Sidebar becomes a slide-in drawer */
+  #sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 100;
+    box-shadow: none;
+  }
+  #sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  }
+
+  /* Main fills full width */
+  #main { margin-left: 0; }
+
+  /* Topbar: show hamburger, hide sheet button */
+  #menu-btn { display: flex; align-items: center; }
+  .topbar { padding: 0 16px; gap: 10px; }
+  .topbar-title { font-size: 13px; }
+  .btn-sheet-link { display: none; }
+
+  /* Sections: less padding */
+  .section { padding: 16px; }
+
+  /* Page header stacks vertically */
+  .page-header { flex-direction: column; gap: 10px; }
+  .page-header-left h1 { font-size: 18px; }
+
+  /* Stat cards: 2 columns */
+  .stat-row { grid-template-columns: repeat(2,1fr); gap: 10px; }
+  .stat-value { font-size: 24px; }
+
+  /* Filter bar: stacks, full width inputs */
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-input { min-width: unset; width: 100%; }
+  .filter-select { width: 100%; }
+
+  /* Tables: allow horizontal scroll */
+  .table-wrap { overflow-x: auto; }
+
+  /* Two-column layouts: single column */
+  .two-col { grid-template-columns: 1fr; }
+
+  /* Modal: full width feel */
+  .modal { padding: 20px; }
+
+  /* Gantt legend: smaller gap */
+  .gantt-legend { gap: 8px 16px; }
+}
 </style>
 </head>
 <body>
@@ -442,14 +509,16 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     </div>
   </div>
 </div>
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- MAIN -->
 <div id="main">
   <div class="topbar">
+    <button id="menu-btn" onclick="toggleSidebar()" aria-label="Menú">☰</button>
     <span class="topbar-title" id="topbar-title">Inventario de Herramientas</span>
     <div class="topbar-right">
       <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Actualizar</button>
-      <a href="https://docs.google.com/spreadsheets/d/1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M/edit?gid=848099635#gid=848099635" target="_blank">
+      <a class="btn-sheet-link" href="https://docs.google.com/spreadsheets/d/1f-F4ewt1YNxFlzkgUM4nM8LACXt69JAvMgr7bqNYG_M/edit?gid=848099635#gid=848099635" target="_blank">
         <button class="btn btn-primary btn-sm">↗ Abrir Sheet</button>
       </a>
     </div>
@@ -561,29 +630,34 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       </select>
     </div>
     <div class="matrix-wrap">
-      <div class="matrix-label">Eje X → Esfuerzo de implementación &nbsp;|&nbsp; Eje Y ↑ Impacto esperado</div>
       <div class="matrix-outer">
         <div style="position:relative;width:100%">
           <div style="display:flex;align-items:stretch;gap:0">
-            <div style="display:flex;flex-direction:column;justify-content:space-between;padding:8px 0;margin-right:8px;width:40px;text-align:right">
-              <span style="font-size:9px;color:var(--text3);font-weight:700">ALTO</span>
-              <span style="font-size:9px;color:var(--text3);font-weight:700">BAJO</span>
+            <!-- Y axis title -->
+            <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;color:var(--text3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding-right:6px;white-space:nowrap;display:flex;align-items:center">↑ Impacto</div>
+            <!-- Y axis numbers -->
+            <div style="display:flex;flex-direction:column;justify-content:space-between;padding:8px 0;margin-right:8px;width:22px;text-align:right">
+              <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">10</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">5</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">0</span>
             </div>
             <div style="flex:1">
               <div id="matrix-canvas">
                 <div class="qbg" style="top:0;left:0;background:#B07D0A08"><span class="qbg-label" style="color:var(--amber)">Estratégico</span></div>
                 <div class="qbg" style="top:0;right:0;background:#88B31808"><span class="qbg-label" style="color:var(--green)">Quick Win</span></div>
                 <div class="qbg" style="bottom:0;left:0;background:transparent"><span class="qbg-label" style="color:var(--text3)">Evaluar</span></div>
-                <div class="qbg" style="bottom:0;right:0;background:#2C6E9A08"><span class="qbg-label" style="color:var(--blue)">Bajo Impacto</span></div>
+                <div class="qbg" style="bottom:0;right:0;background:#C0392B08"><span class="qbg-label" style="color:var(--red)">Bajo Impacto</span></div>
                 <div class="matrix-divider-v"></div>
                 <div class="matrix-divider-h"></div>
                 <div id="matrix-nodes"></div>
               </div>
-              <div class="matrix-x-bar">
-                <span>BAJO</span>
-                <span>ESFUERZO →</span>
-                <span>ALTO</span>
+              <!-- X axis numbers -->
+              <div style="display:flex;justify-content:space-between;padding:4px 0 0">
+                <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">0</span>
+                <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">5</span>
+                <span style="font-size:10px;color:var(--text3);font-weight:700;font-family:var(--mono)">10</span>
               </div>
+              <div style="text-align:center;font-size:9px;color:var(--text3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Esfuerzo de implementación →</div>
             </div>
           </div>
         </div>
@@ -880,8 +954,19 @@ let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqobfEoE-Owlmgd8
 let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[], tareas:[] };
 let roadmapState = {};
 
+// ── MOBILE SIDEBAR ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
 // ── NAV ──
 function showSection(id, el) {
+  closeSidebar();
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
