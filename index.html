@@ -1550,7 +1550,7 @@ function _xmlEsc(s) {
 const PP_PHASE_COLORS = ['#5B8DB8','#1B6B5E','#2D8E74','#4DAB5A','#88B318'];
 
 function _getPhaseDurations() {
-  const result = [{ id:'F-000', name:'Revisión conjunta funcionales', duration:14, description:'Alineación conjunta con funcionales de cada área' }];
+  const result = [];
   const _pid  = p => v(p,'ID Fase')||v(p,'ID Fase *')||v(p,'ID *','ID');
   const _pname = p => v(p,'Nombre Fase *','Nombre Fase');
   const _pdesc = p => v(p,'Objetivo *','Objetivo');
@@ -1558,7 +1558,7 @@ function _getPhaseDurations() {
     .filter(p => _pid(p) || _pname(p))
     .sort((a,b) => (_pid(a)||_pname(a)||'').localeCompare(_pid(b)||_pname(b)||''));
   roadPhases.forEach(p => {
-    const id = _pid(p) || ('F-00' + result.length);
+    const id = _pid(p) || ('F-' + String(result.length).padStart(3,'0'));
     const fi = _parseGanttDate(v(p,'Fecha Inicio *','Fecha Inicio'));
     const ff = _parseGanttDate(v(p,'Fecha Fin *','Fecha Fin'));
     const dur = (fi && ff && ff.getTime() > fi.getTime())
@@ -1566,12 +1566,13 @@ function _getPhaseDurations() {
       : 30;
     result.push({ id, name:_pname(p)||id, duration:dur, description:_pdesc(p) });
   });
-  // Fallback: si el roadmap no se ha cargado todavía, usar duraciones conocidas
-  if (result.length === 1) {
-    result.push({ id:'F-001', name:'Definición Funcional',      duration:22,  description:'Requisitos funcionales y técnicos detallados' });
-    result.push({ id:'F-002', name:'Validación Técnica',        duration:14,  description:'Pruebas de integración y viabilidad técnica' });
-    result.push({ id:'F-003', name:'Implementación',            duration:108, description:'Despliegue, configuración y puesta en marcha' });
-    result.push({ id:'F-004', name:'Adopción y Seguimiento',    duration:42,  description:'Formación, monitorización y consolidación' });
+  // Fallback completo si el roadmap no tiene datos
+  if (result.length === 0) {
+    result.push({ id:'F-001', name:'Fase 0 — Revisión conjunta funcionales', duration:14,  description:'Alineación conjunta con funcionales de cada área' });
+    result.push({ id:'F-002', name:'Fase 1 — Definición Funcional',          duration:22,  description:'Requisitos funcionales y técnicos detallados' });
+    result.push({ id:'F-003', name:'Fase 2 — Validación Técnica',            duration:14,  description:'Pruebas de integración y viabilidad técnica' });
+    result.push({ id:'F-004', name:'Fase 3 — Implementación',                duration:108, description:'Despliegue, configuración y puesta en marcha' });
+    result.push({ id:'F-005', name:'Fase 4 — Adopción y Seguimiento',        duration:42,  description:'Formación, monitorización y consolidación' });
   }
   return result;
 }
@@ -1728,7 +1729,7 @@ function renderProjectPlan(area, wrapId) {
     <div style="display:flex;align-items:flex-start;gap:8px;min-width:220px;max-width:360px">
       <span style="flex-shrink:0;margin-top:3px;width:11px;height:11px;border-radius:3px;background:${PP_PHASE_COLORS[i]};display:inline-block"></span>
       <div style="line-height:1.35">
-        <div style="font-size:11px;font-weight:700;color:var(--text)">${_xmlEsc(p.id)} &nbsp;·&nbsp; ${_xmlEsc(p.name)}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text)">${_xmlEsc(p.name)}</div>
         ${p.description ? `<div style="font-size:10px;color:var(--text3);margin-top:1px">${_xmlEsc(p.description)}</div>` : ''}
       </div>
     </div>`).join('');
