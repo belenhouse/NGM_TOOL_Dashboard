@@ -184,6 +184,20 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 .badge-blue { background: #2C6E9A15; color: var(--blue); border: 1px solid #2C6E9A30; }
 .badge-gray { background: var(--bg3); color: var(--text3); border: 1px solid var(--border2); }
 
+/* ── INLINE STATUS SELECT (tareas) ── */
+.status-sel {
+  border-radius: 20px; padding: 3px 8px; font-size: 10px;
+  font-weight: 700; font-family: var(--font); cursor: pointer;
+  border: 1px solid; outline: none; letter-spacing: 0.3px;
+  transition: opacity .15s;
+}
+.status-sel:hover { opacity: .8; }
+.status-sel:focus { outline: none; box-shadow: 0 0 0 2px rgba(136,179,24,.3); }
+.s-Pendiente  { background:#B07D0A15; color:var(--amber); border-color:#B07D0A30; }
+.s-En_curso   { background:#2C6E9A15; color:var(--blue);  border-color:#2C6E9A30; }
+.s-Completada { background:#88B31815; color:#4a6a00;      border-color:#88B31830; }
+.s-Bloqueada  { background:#C0392B15; color:var(--red);   border-color:#C0392B30; }
+
 /* ── AREA DOTS ── */
 .area-dot { display: inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 .area-Producto { background: #2C6E9A; }
@@ -1508,6 +1522,7 @@ function filterTareas(){
   const tC={Mitigacion:'badge-red',Dependencia:'badge-amber',Accion:'badge-blue',Manual:'badge-gray'};
   const tb=document.getElementById('tbody-tareas');
   if(!rows.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei">✓</div>Sin tareas con estos filtros</div></td></tr>';return;}
+  const ESTADOS=['Pendiente','En curso','Completada','Bloqueada'];
   tb.innerHTML=rows.map(r=>{
     const nombre=v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea')||'—';
     const rArea=v(r,'Área *','Area *','Área','Area')||'—';
@@ -1516,6 +1531,8 @@ function filterTareas(){
     const fase=v(r,'Fase *','Fase')||'—';
     const resp=v(r,'Responsable *','Responsable')||'—';
     const fecha=v(r,'Fecha Limite *','Fecha Límite *','Fecha Limite','Fecha Límite')||'—';
+    const didx=DATA.tareas.indexOf(r);
+    const opts=ESTADOS.map(s=>`<option${s===estado?' selected':''}>${s}</option>`).join('');
     return `<tr>
       <td class="td-name">${nombre}</td>
       <td>${rArea==='Todas'?'<span style="font-size:11px;color:var(--text3)">Todas</span>':areaDot(rArea)+rArea}</td>
@@ -1523,7 +1540,7 @@ function filterTareas(){
       <td style="font-size:12px;font-family:var(--mono)">${fase}</td>
       <td style="font-size:12px">${resp}</td>
       <td style="font-family:var(--mono);font-size:12px">${fecha}</td>
-      <td>${badge(estado,eC[estado]||'badge-gray')}</td>
+      <td onclick="event.stopPropagation()"><select class="status-sel s-${estado.replace(/ /g,'_')}" onchange="updateTareaEstado(${didx},this.value,this)">${opts}</select></td>
     </tr>`;
   }).join('');
 }
@@ -1542,6 +1559,39 @@ async function saveNewTarea(){
     'Estado *':document.getElementById('tar-estado').value
   };
   await _saveToSheet('btn-save-tar','add-status-tareas','Tareas',data,()=>toggleAddPanel('tareas'));
+}
+
+function updateTareaEstado(idx, newStatus, sel) {
+  if(idx<0||idx>=DATA.tareas.length) return;
+  const r=DATA.tareas[idx];
+  r['Estado *']=newStatus;
+  if(sel) sel.className=`status-sel s-${newStatus.replace(/ /g,'_')}`;
+  const d=DATA.tareas;
+  document.getElementById('s-tar-total').textContent=d.length;
+  document.getElementById('s-tar-pendiente').textContent=d.filter(r=>v(r,'Estado *')==='Pendiente').length;
+  document.getElementById('s-tar-encurso').textContent=d.filter(r=>v(r,'Estado *')==='En curso').length;
+  document.getElementById('s-tar-completada').textContent=d.filter(r=>v(r,'Estado *')==='Completada').length;
+  document.getElementById('badge-tareas').textContent=d.filter(r=>['Pendiente','En curso'].includes(v(r,'Estado *'))).length;
+  _toast('✓ Estado actualizado');
+  // Apps Script needs to handle action:'updateStatus' — finds row by Herramienta+Área+Tipo+Fase and updates Estado *
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({
+    action:'updateStatus', sheet:'Tareas',
+    'Herramienta *':v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea'),
+    'Área *':v(r,'Área *','Area *'),
+    'Tipo *':v(r,'Tipo *'),
+    'Fase *':v(r,'Fase *','Fase'),
+    'Estado *':newStatus
+  })}).catch(()=>{});
+}
+function _toast(msg,color='var(--green)'){
+  let t=document.getElementById('_toast');
+  if(!t){
+    t=document.createElement('div');t.id='_toast';
+    t.style.cssText='position:fixed;bottom:24px;right:24px;z-index:9999;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--font);box-shadow:0 4px 12px rgba(0,0,0,.15);transition:opacity .3s;pointer-events:none;opacity:0';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;t.style.background='var(--bg2)';t.style.color=color;t.style.border=`1px solid ${color}`;
+  t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>t.style.opacity='0',2200);
 }
 
 // ── KPIs ──
