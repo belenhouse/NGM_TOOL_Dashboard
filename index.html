@@ -348,6 +348,21 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg3); }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── GANTT ── */
+.gantt-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow);
+  margin-top: 4px;
+}
+.gantt-legend {
+  display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.gantt-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); font-weight: 600; }
+.gantt-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.gantt-chart-scroll { overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -402,6 +417,18 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
       <div class="nav-item" onclick="showSection('tareas',this)">
         <span class="icon">✓</span> Tareas
         <span class="nav-badge" id="badge-tareas">—</span>
+      </div>
+      <div class="nav-item" onclick="showSection('gantt-producto',this)">
+        <span class="icon">▤</span> Project Plan Producto
+      </div>
+      <div class="nav-item" onclick="showSection('gantt-marketing',this)">
+        <span class="icon">▤</span> Project Plan Marketing
+      </div>
+      <div class="nav-item" onclick="showSection('gantt-operaciones',this)">
+        <span class="icon">▤</span> Project Plan Operaciones
+      </div>
+      <div class="nav-item" onclick="showSection('gantt-comercial',this)">
+        <span class="icon">▤</span> Project Plan Comercial
       </div>
       <div class="nav-item" onclick="showSection('kpis',this)">
         <span class="icon">◈</span> Tracker KPIs
@@ -767,6 +794,90 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     </tr></thead><tbody id="tbody-tareas"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Cargando...</div></td></tr></tbody></table></div>
   </div>
 
+  <!-- GANTT PRODUCTO -->
+  <div class="section" id="section-gantt-producto">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 style="color:#2C6E9A">Project Plan · Producto</h1>
+        <p>Diagrama de Gantt de tareas del área de Producto, ordenadas por fecha de inicio.</p>
+      </div>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt-legend">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Estado:</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#9AA88C"></span>Pendiente</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#2C6E9A"></span>En curso</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#88B318"></span>Completada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#C0392B"></span>Bloqueada</span>
+        <span class="gantt-legend-item" style="margin-left:auto"><span style="display:inline-block;width:10px;height:2px;background:#C0392B;opacity:.6;border-radius:1px"></span>&nbsp;Hoy</span>
+      </div>
+      <div class="gantt-chart-scroll"><div id="gantt-producto-chart"></div></div>
+    </div>
+  </div>
+
+  <!-- GANTT MARKETING -->
+  <div class="section" id="section-gantt-marketing">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 style="color:#88B318">Project Plan · Marketing</h1>
+        <p>Diagrama de Gantt de tareas del área de Marketing, ordenadas por fecha de inicio.</p>
+      </div>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt-legend">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Estado:</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#9AA88C"></span>Pendiente</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#2C6E9A"></span>En curso</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#88B318"></span>Completada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#C0392B"></span>Bloqueada</span>
+        <span class="gantt-legend-item" style="margin-left:auto"><span style="display:inline-block;width:10px;height:2px;background:#C0392B;opacity:.6;border-radius:1px"></span>&nbsp;Hoy</span>
+      </div>
+      <div class="gantt-chart-scroll"><div id="gantt-marketing-chart"></div></div>
+    </div>
+  </div>
+
+  <!-- GANTT OPERACIONES -->
+  <div class="section" id="section-gantt-operaciones">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 style="color:#B07D0A">Project Plan · Operaciones</h1>
+        <p>Diagrama de Gantt de tareas del área de Operaciones, ordenadas por fecha de inicio.</p>
+      </div>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt-legend">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Estado:</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#9AA88C"></span>Pendiente</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#2C6E9A"></span>En curso</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#88B318"></span>Completada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#C0392B"></span>Bloqueada</span>
+        <span class="gantt-legend-item" style="margin-left:auto"><span style="display:inline-block;width:10px;height:2px;background:#C0392B;opacity:.6;border-radius:1px"></span>&nbsp;Hoy</span>
+      </div>
+      <div class="gantt-chart-scroll"><div id="gantt-operaciones-chart"></div></div>
+    </div>
+  </div>
+
+  <!-- GANTT COMERCIAL -->
+  <div class="section" id="section-gantt-comercial">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 style="color:#8B44AD">Project Plan · Comercial</h1>
+        <p>Diagrama de Gantt de tareas del área de Comercial, ordenadas por fecha de inicio.</p>
+      </div>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt-legend">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-right:4px">Estado:</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#9AA88C"></span>Pendiente</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#2C6E9A"></span>En curso</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#88B318"></span>Completada</span>
+        <span class="gantt-legend-item"><span class="gantt-legend-dot" style="background:#C0392B"></span>Bloqueada</span>
+        <span class="gantt-legend-item" style="margin-left:auto"><span style="display:inline-block;width:10px;height:2px;background:#C0392B;opacity:.6;border-radius:1px"></span>&nbsp;Hoy</span>
+      </div>
+      <div class="gantt-chart-scroll"><div id="gantt-comercial-chart"></div></div>
+    </div>
+  </div>
+
   <!-- KPIs -->
   <div class="section" id="section-kpis">
     <div class="page-header"><div class="page-header-left"><h1>Tracker de KPIs</h1><p>Ejecución · Adopción · Valor</p></div></div>
@@ -887,6 +998,7 @@ function refreshAll(){ loadAll(); }
 function renderAll(){
   renderInventario(); renderRiesgos(); renderDependencias();
   renderInversion(); renderRoadmap(); renderKPIs(); renderTareas(); updateBadges();
+  renderGanttProducto(); renderGanttMarketing(); renderGanttOperaciones(); renderGanttComercial();
 }
 function updateBadges(){
   document.getElementById('badge-inventario').textContent=DATA.inventario.length;
@@ -1439,6 +1551,146 @@ function showDetalle(r){
   document.getElementById('modal-overlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+
+// ── GANTT ──
+function _parseGanttDate(str) {
+  if (!str || str === '—') return null;
+  str = str.trim();
+  let m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  m = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) return new Date(+m[3], +m[2]-1, +m[1]);
+  const d = new Date(str);
+  return isNaN(d.getTime()) ? null : d;
+}
+function _xmlEsc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderGantt(area, chartId) {
+  const el = document.getElementById(chartId);
+  if (!el) return;
+  const statusColor = {Pendiente:'#9AA88C','En curso':'#2C6E9A',Completada:'#88B318',Bloqueada:'#C0392B'};
+  const MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+  const tasks = DATA.tareas.filter(r => v(r,'Área *','Area *','Área','Area') === area);
+  if (!tasks.length) {
+    el.innerHTML = '<div class="empty" style="padding:40px"><div class="ei">▤</div>Sin tareas para este área</div>';
+    return;
+  }
+
+  const parsed = tasks.map(r => {
+    const sStr = v(r,'Fecha Inicio *','Fecha Inicio');
+    const eStr = v(r,'Fecha Limite *','Fecha Límite *','Fecha Limite','Fecha Límite');
+    let s = _parseGanttDate(sStr), e = _parseGanttDate(eStr);
+    if (!s && e) s = e;
+    if (!e && s) e = s;
+    return {r, s, e};
+  }).filter(t => t.s || t.e).sort((a, b) => {
+    const da = (a.s || a.e).getTime(), db = (b.s || b.e).getTime();
+    return da - db;
+  });
+
+  if (!parsed.length) {
+    el.innerHTML = '<div class="empty" style="padding:40px"><div class="ei">▤</div>Sin fechas disponibles para este área</div>';
+    return;
+  }
+
+  const allDates = parsed.flatMap(t => [t.s, t.e]).filter(Boolean);
+  let minD = new Date(Math.min(...allDates.map(d => d.getTime())));
+  let maxD = new Date(Math.max(...allDates.map(d => d.getTime())));
+  minD = new Date(minD.getFullYear(), minD.getMonth(), 1);
+  maxD = new Date(maxD.getFullYear(), maxD.getMonth() + 1, 0);
+  const totalMs = maxD.getTime() - minD.getTime() || 1;
+
+  const LW = 192, CW = 700, RH = 40, HH = 36, PV = 5;
+  const W = LW + CW;
+  const H = HH + PV + parsed.length * RH + PV;
+  const dx = d => LW + ((d.getTime() - minD.getTime()) / totalMs) * CW;
+
+  const months = [];
+  let cur = new Date(minD.getFullYear(), minD.getMonth(), 1);
+  while (cur.getTime() <= maxD.getTime()) {
+    months.push(new Date(cur));
+    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+  }
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" style="width:100%;min-width:${W}px;font-family:'Plus Jakarta Sans',sans-serif;display:block">`;
+  svg += `<rect width="${W}" height="${H}" fill="#FFFFFF"/>`;
+
+  // Alternating month bands
+  months.forEach((m, i) => {
+    const x1 = dx(m);
+    const nextM = new Date(m.getFullYear(), m.getMonth() + 1, 1);
+    const x2 = nextM.getTime() > maxD.getTime() ? LW + CW : dx(nextM);
+    if (i % 2 === 0) svg += `<rect x="${x1.toFixed(1)}" y="${HH}" width="${(x2-x1).toFixed(1)}" height="${H - HH}" fill="#F5F6F0" opacity="0.6"/>`;
+  });
+
+  // Month grid lines + labels
+  months.forEach(m => {
+    const x = dx(m);
+    svg += `<line x1="${x.toFixed(1)}" y1="0" x2="${x.toFixed(1)}" y2="${H}" stroke="#E2E5D8" stroke-width="1"/>`;
+    const lbl = MONTHS_ES[m.getMonth()] + ' ' + m.getFullYear();
+    svg += `<text x="${(x + 5).toFixed(1)}" y="${(HH - 8).toFixed(1)}" font-size="10" fill="#8A9470" font-weight="600">${_xmlEsc(lbl)}</text>`;
+  });
+
+  // Header separator + label divider
+  svg += `<rect x="0" y="0" width="${LW}" height="${HH}" fill="#F0F2EB"/>`;
+  svg += `<rect x="${LW}" y="0" width="${CW}" height="${HH}" fill="#F0F2EB"/>`;
+  svg += `<line x1="0" y1="${HH}" x2="${W}" y2="${HH}" stroke="#D4D8C8" stroke-width="1.5"/>`;
+  svg += `<line x1="${LW}" y1="0" x2="${LW}" y2="${H}" stroke="#D4D8C8" stroke-width="1.5"/>`;
+  svg += `<text x="${(LW / 2).toFixed(1)}" y="${(HH - 10).toFixed(1)}" font-size="9" fill="#4A5238" font-weight="700" text-anchor="middle" letter-spacing="1">TAREA · RESPONSABLE</text>`;
+  svg += `<text x="${(LW + CW / 2).toFixed(1)}" y="${(HH - 10).toFixed(1)}" font-size="9" fill="#4A5238" font-weight="700" text-anchor="middle" letter-spacing="1">LÍNEA DE TIEMPO</text>`;
+
+  // Today line
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  if (today.getTime() >= minD.getTime() && today.getTime() <= maxD.getTime()) {
+    const tx = dx(today);
+    svg += `<line x1="${tx.toFixed(1)}" y1="${HH}" x2="${tx.toFixed(1)}" y2="${H}" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>`;
+    svg += `<rect x="${tx.toFixed(1)}" y="${HH}" width="26" height="12" fill="#C0392B" opacity="0.55" rx="2"/>`;
+    svg += `<text x="${(tx + 3).toFixed(1)}" y="${(HH + 9).toFixed(1)}" font-size="8" fill="white" font-weight="700">Hoy</text>`;
+  }
+
+  // Task rows
+  parsed.forEach(({r, s: ts, e: te}, i) => {
+    const rowY = HH + PV + i * RH;
+    const nombre = v(r,'Nombre Tarea *','Nombre Tarea') || '—';
+    const resp = v(r,'Responsable *','Responsable') || '';
+    const estado = v(r,'Estado *') || 'Pendiente';
+    const col = statusColor[estado] || '#9AA88C';
+
+    if (i % 2 === 1) svg += `<rect x="0" y="${rowY}" width="${LW}" height="${RH}" fill="#F5F6F0" opacity="0.7"/>`;
+    svg += `<line x1="0" y1="${rowY + RH}" x2="${W}" y2="${rowY + RH}" stroke="#E2E5D8" stroke-width="0.5"/>`;
+
+    const shortN = nombre.length > 25 ? nombre.substring(0, 23) + '…' : nombre;
+    svg += `<text x="10" y="${(rowY + 15).toFixed(1)}" font-size="12" fill="#1A1F12" font-weight="600">${_xmlEsc(shortN)}</text>`;
+    if (resp) svg += `<text x="10" y="${(rowY + 29).toFixed(1)}" font-size="10" fill="#8A9470">${_xmlEsc(resp)}</text>`;
+
+    if (ts && te) {
+      const bx = dx(ts);
+      const bw = Math.max(6, dx(te) - bx);
+      const by = rowY + 9;
+      const bh = 20;
+      svg += `<rect x="${bx.toFixed(1)}" y="${by}" width="${bw.toFixed(1)}" height="${bh}" fill="${col}" rx="4" opacity="0.88"/>`;
+      if (bw > 58) {
+        svg += `<text x="${(bx + bw / 2).toFixed(1)}" y="${(by + 13).toFixed(1)}" font-size="9" fill="white" text-anchor="middle" font-weight="700">${_xmlEsc(estado)}</text>`;
+      }
+    } else if (ts || te) {
+      const mx = dx(ts || te);
+      const my = rowY + RH / 2;
+      svg += `<polygon points="${(mx-5).toFixed(1)},${(my+8).toFixed(1)} ${mx.toFixed(1)},${(my-8).toFixed(1)} ${(mx+5).toFixed(1)},${(my+8).toFixed(1)}" fill="${col}" opacity="0.88"/>`;
+    }
+  });
+
+  svg += '</svg>';
+  el.innerHTML = svg;
+}
+
+function renderGanttProducto()   { renderGantt('Producto',    'gantt-producto-chart');   }
+function renderGanttMarketing()  { renderGantt('Marketing',   'gantt-marketing-chart');  }
+function renderGanttOperaciones(){ renderGantt('Operaciones', 'gantt-operaciones-chart');}
+function renderGanttComercial()  { renderGantt('Comercial',   'gantt-comercial-chart');  }
 
 loadAll();
 setInterval(loadAll, 5*60*1000);
