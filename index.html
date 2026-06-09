@@ -402,8 +402,12 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     z-index: 100;
     box-shadow: none;
     height: 100vh;
+    overflow: hidden;
+  }
+  #sidebar nav {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    min-height: 0;
   }
   #sidebar.open {
     transform: translateX(0);
@@ -827,7 +831,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
 
   <!-- ROADMAP -->
   <div class="section" id="section-roadmap">
-    <div class="page-header"><div class="page-header-left"><h1>Roadmap de Implementación</h1><p>Marca fases como completadas y añade comentarios de incidencias.</p></div></div>
+    <div class="page-header"><div class="page-header-left"><h1>Roadmap de Implementación</h1></div></div>
     <div id="roadmap-content"><div class="loading"><div class="spinner"></div>Cargando roadmap...</div></div>
   </div>
 
@@ -1456,24 +1460,19 @@ function renderRoadmap(){
   const cont=document.getElementById('roadmap-content');
   const phases=DATA.roadmap;
   if(!phases.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
-  const eC={Completada:'badge-green','En Progreso':'badge-blue',Bloqueada:'badge-red',Pendiente:'badge-gray'};
   cont.innerHTML=phases.map((r,i)=>{
     const nombre=v(r,'Nombre Fase *','Nombre Fase')||'Fase '+(i+1);
     const obj=v(r,'Objetivo *','Objetivo')||'—';
     const fi=v(r,'Fecha Inicio *','Fecha Inicio')||'';
     const ff=v(r,'Fecha Fin *','Fecha Fin')||'';
     const resp=v(r,'Responsable *','Responsable')||'—';
-    const estado=v(r,'Estado *','Estado')||'Pendiente';
     const areaFase=v(r,'Área *','Area *','Área','Area')||'';
     const tools=v(r,'Herramientas Incluidas')||'';
-    return `<div class="roadmap-phase ${estado==='Completada'?'completed':''} ${estado==='Bloqueada'?'blocked':''}">
+    return `<div class="roadmap-phase">
       <div class="phase-header">
         <div>
           <div class="phase-name">${nombre}${areaFase?` <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:6px">${areaFase}</span>`:''}</div>
           <div class="phase-meta">${fi}${fi&&ff?' → ':''}${ff} · ${resp}</div>
-        </div>
-        <div class="phase-right">
-          ${badge(estado,eC[estado]||'badge-gray')}
         </div>
       </div>
       <div style="font-size:13px;color:var(--text2)">${obj}</div>
