@@ -969,7 +969,6 @@ const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out
 let APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqobfEoE-Owlmgd8EWn_BH547wYnl1auUbF_fSmkc65tqgw_1U4LTO4cpOBebsDzR5UQ/exec';
 
 let DATA = { inventario:[], riesgos:[], dependencias:[], inversion:[], roadmap:[], kpis:[], tareas:[] };
-let roadmapState = {};
 
 // ── MOBILE SIDEBAR ──
 function toggleSidebar() {
@@ -1457,8 +1456,8 @@ function renderRoadmap(){
   const cont=document.getElementById('roadmap-content');
   const phases=DATA.roadmap;
   if(!phases.length){cont.innerHTML='<div class="empty"><div class="ei">▶</div>Sin fases definidas. Añade datos en la pestaña Roadmap del Sheet.</div>';return;}
+  const eC={Completada:'badge-green','En Progreso':'badge-blue',Bloqueada:'badge-red',Pendiente:'badge-gray'};
   cont.innerHTML=phases.map((r,i)=>{
-    const id=v(r,'ID Fase')||i;
     const nombre=v(r,'Nombre Fase *','Nombre Fase')||'Fase '+(i+1);
     const obj=v(r,'Objetivo *','Objetivo')||'—';
     const fi=v(r,'Fecha Inicio *','Fecha Inicio')||'';
@@ -1466,11 +1465,8 @@ function renderRoadmap(){
     const resp=v(r,'Responsable *','Responsable')||'—';
     const estado=v(r,'Estado *','Estado')||'Pendiente';
     const areaFase=v(r,'Área *','Area *','Área','Area')||'';
-    const pct=parseInt(v(r,'% Completado')||0)||0;
     const tools=v(r,'Herramientas Incluidas')||'';
-    const done=roadmapState[id]?.completed||(estado==='Completada');
-    const eC={Completada:'badge-green','En Progreso':'badge-blue',Bloqueada:'badge-red',Pendiente:'badge-gray'};
-    return `<div class="roadmap-phase ${done?'completed':''} ${estado==='Bloqueada'?'blocked':''}" id="phase-${id}">
+    return `<div class="roadmap-phase ${estado==='Completada'?'completed':''} ${estado==='Bloqueada'?'blocked':''}">
       <div class="phase-header">
         <div>
           <div class="phase-name">${nombre}${areaFase?` <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:6px">${areaFase}</span>`:''}</div>
@@ -1478,19 +1474,13 @@ function renderRoadmap(){
         </div>
         <div class="phase-right">
           ${badge(estado,eC[estado]||'badge-gray')}
-          <button class="btn ${done?'btn-success':'btn-ghost'} btn-sm" onclick="toggleComplete('${id}')">
-            ${done?'✓ Completada':'Marcar completa'}
-          </button>
         </div>
       </div>
       <div style="font-size:13px;color:var(--text2)">${obj}</div>
       ${tools?`<div class="phase-tools">${tools.split(',').map(t=>`${badge(t.trim(),'badge-gray')}`).join(' ')}</div>`:''}
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div style="font-size:11px;color:var(--text3);margin-top:3px;text-align:right">${pct}% completado</div>
     </div>`;
   }).join('');
 }
-function toggleComplete(id){roadmapState[id]=roadmapState[id]||{};roadmapState[id].completed=!roadmapState[id].completed;renderRoadmap();}
 
 // ── TAREAS ──
 function renderTareas(){
