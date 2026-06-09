@@ -891,10 +891,6 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
         <option value="">Todos los tipos</option>
         <option>Mitigacion</option><option>Dependencia</option><option>Accion</option><option>Manual</option>
       </select>
-      <select class="filter-select" id="filter-tar-fase" onchange="filterTareas()">
-        <option value="">Todas las fases</option>
-        <option>Fase 1</option><option>Fase 2</option><option>Fase 3</option><option>Fase 4</option>
-      </select>
     </div>
     <div class="table-wrap"><table><thead><tr>
       <th>Herramienta</th><th>Área</th><th>Tipo</th><th>Fase</th><th>Responsable</th><th>Fecha límite</th><th>Estado</th>
@@ -1509,15 +1505,13 @@ function filterTareas(){
   const area=document.getElementById('filter-tar-area').value;
   const estado=document.getElementById('filter-tar-estado').value;
   const tipo=document.getElementById('filter-tar-tipo').value;
-  const fase=document.getElementById('filter-tar-fase').value;
   const rows=DATA.tareas.filter(r=>{
     const rArea=v(r,'Área *','Area *','Área','Area');
     const rHerr=v(r,'Herramienta *','Nombre Tarea *','Nombre Tarea');
     return(!herramienta||rHerr===herramienta)&&
            (!area||rArea===area||rArea==='Todas')&&
            (!estado||v(r,'Estado *')===estado)&&
-           (!tipo||v(r,'Tipo *')===tipo)&&
-           (!fase||v(r,'Fase *','Fase')===fase);
+           (!tipo||v(r,'Tipo *')===tipo);
   });
   const eC={Pendiente:'badge-amber','En curso':'badge-blue',Completada:'badge-green',Bloqueada:'badge-red'};
   const tC={Mitigacion:'badge-red',Dependencia:'badge-amber',Accion:'badge-blue',Manual:'badge-gray'};
