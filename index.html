@@ -853,8 +853,8 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div class="add-panel" id="add-panel-tareas">
       <div class="add-panel-title">Nueva tarea</div>
       <div class="add-grid">
+        <div class="add-field"><label>Herramienta *</label><select id="tar-nombre"><option value="">— Selecciona herramienta —</option></select></div>
         <div class="add-field"><label>Área *</label><select id="tar-area"><option value="Producto">Producto</option><option value="Marketing">Marketing</option><option value="Operaciones">Operaciones</option><option value="Comercial">Comercial</option></select></div>
-        <div class="add-field"><label>Nombre Tarea *</label><input type="text" id="tar-nombre" placeholder="Describe la tarea"></div>
         <div class="add-field full"><label>Descripción</label><input type="text" id="tar-desc" placeholder="Detalle adicional"></div>
         <div class="add-field"><label>Tipo *</label><select id="tar-tipo"><option value="Mitigacion">Mitigacion</option><option value="Dependencia">Dependencia</option><option value="Accion">Accion</option><option value="Manual">Manual</option></select></div>
         <div class="add-field"><label>Fase *</label><select id="tar-fase"><option value="Fase 1">Fase 1</option><option value="Fase 2">Fase 2</option><option value="Fase 3">Fase 3</option><option value="Fase 4">Fase 4</option></select></div>
@@ -1498,6 +1498,11 @@ function renderTareas(){
   const selH=document.getElementById('filter-tar-herramienta');
   const prevH=selH.value;
   selH.innerHTML='<option value="">Todas las herramientas</option>'+herramientas.map(h=>`<option${h===prevH?' selected':''}>${h}</option>`).join('');
+  // Populate form herramienta dropdown from inventario
+  const allTools=[...new Set(DATA.inventario.map(r=>v(r,'Nombre *','Nombre')).filter(Boolean))].sort();
+  const selForm=document.getElementById('tar-nombre');
+  const prevForm=selForm.value;
+  selForm.innerHTML='<option value="">— Selecciona herramienta —</option>'+allTools.map(h=>`<option${h===prevForm?' selected':''}>${h}</option>`).join('');
   filterTareas();
 }
 function filterTareas(){
@@ -1546,7 +1551,7 @@ function filterTareas(){
 async function saveNewTarea(){
   const nombre=document.getElementById('tar-nombre').value.trim();
   const status=document.getElementById('add-status-tareas');
-  if(!nombre){status.textContent='⚠ El nombre es obligatorio.';return;}
+  if(!nombre){status.textContent='⚠ Selecciona una herramienta.';return;}
   const data={
     'Herramienta *':nombre,
     'Área *':document.getElementById('tar-area').value,
