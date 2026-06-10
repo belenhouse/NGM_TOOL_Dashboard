@@ -1798,7 +1798,7 @@ function renderProjectPlan(area, wrapId) {
   const totalMs = maxD.getTime() - minD.getTime() || 1;
 
   // Layout constants — taller header to fit year row + month row
-  const LW = 208, CW = 900, RH = 56, HH = 46;
+  const LW = 208, CW = 900, RH = 38, HH = 46;
   const W = LW + CW;
   const H = HH + tools.length * RH;
   const dx = d => LW + ((d.getTime() - minD.getTime()) / totalMs) * CW;
@@ -1868,9 +1868,6 @@ function renderProjectPlan(area, wrapId) {
   svg += `<line x1="${LW}" y1="0" x2="${LW}" y2="${H}" stroke="#B8BBA8" stroke-width="1.5"/>`;
   svg += `<text x="${(LW/2).toFixed(1)}" y="${(HH/2+4).toFixed(1)}" font-size="9" fill="#4A5238" font-weight="700" text-anchor="middle" letter-spacing="1">HERRAMIENTA</text>`;
 
-  // Task status → color mapping (for sub-bars)
-  const TASK_COLORS = { 'Completada':'#2D8E74', 'En curso':'#2C6E9A', 'Pendiente':'#B07D0A', 'Bloqueada':'#B94040' };
-
   // ⑦ Tool rows
   toolSchedules.forEach(({r, schedule, toolName}, i) => {
     const nombre = toolName || v(r,'Nombre *','Nombre') || '—';
@@ -1879,18 +1876,15 @@ function renderProjectPlan(area, wrapId) {
     // Row backgrounds
     svg += `<rect x="0" y="${rowY}" width="${LW}" height="${RH}" fill="${areaColor}" opacity="${i%2===0?'0.09':'0.16'}"/>`;
     svg += `<rect x="${LW}" y="${rowY}" width="${CW}" height="${RH}" fill="${areaColor}" opacity="${i%2===0?'0.02':'0.05'}"/>`;
-    // Task sub-band background (lower portion)
-    svg += `<rect x="${LW}" y="${rowY+30}" width="${CW}" height="${RH-30}" fill="#00000008"/>`;
     svg += `<line x1="0" y1="${rowY+RH}" x2="${W}" y2="${rowY+RH}" stroke="#D4D8C8" stroke-width="0.5"/>`;
-    svg += `<line x1="${LW}" y1="${rowY+30}" x2="${W}" y2="${rowY+30}" stroke="#D4D8C8" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.6"/>`;
 
-    // Accent bar + priority rank + tool name (vertically centered in upper half)
+    // Accent bar + priority rank + tool name (centered vertically)
     svg += `<rect x="0" y="${rowY}" width="4" height="${RH}" fill="${areaColor}" opacity="0.7"/>`;
-    svg += `<text x="10" y="${(rowY+16).toFixed(1)}" font-size="9" fill="${areaColor}" font-weight="800" opacity="0.7">#${i+1}</text>`;
+    svg += `<text x="10" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="9" fill="${areaColor}" font-weight="800" opacity="0.7">#${i+1}</text>`;
     const shortN = nombre.length>22 ? nombre.substring(0,20)+'…' : nombre;
-    svg += `<text x="28" y="${(rowY+16).toFixed(1)}" font-size="11" fill="#1A1F12" font-weight="700">${_xmlEsc(shortN)}</text>`;
+    svg += `<text x="28" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="11" fill="#1A1F12" font-weight="700">${_xmlEsc(shortN)}</text>`;
 
-    // Phase bars (upper band: y+5 to y+27)
+    // Phase bars — full row height
     schedule.forEach(({idx, phase, start, end, skip}) => {
       if (skip) return;
       const bx = dx(start);
@@ -1899,34 +1893,14 @@ function renderProjectPlan(area, wrapId) {
       const phaseTasks = taskMap[`${i}-${idx}`] || [];
       const hasT = phaseTasks.length > 0;
       const oc = hasT ? ` onclick="showGanttTasks('${wrapId}','${i}-${idx}')" style="cursor:pointer"` : '';
-      svg += `<rect x="${bx.toFixed(1)}" y="${(rowY+5)}" width="${bw.toFixed(1)}" height="19" fill="${col}" rx="3" opacity="0.92"${oc}/>`;
-      if (bw > 24) svg += `<text x="${(bx+bw/2).toFixed(1)}" y="${(rowY+17.5).toFixed(1)}" font-size="8" fill="white" text-anchor="middle" font-weight="700" pointer-events="none">F${idx}</text>`;
+      svg += `<rect x="${bx.toFixed(1)}" y="${(rowY+4)}" width="${bw.toFixed(1)}" height="${RH-8}" fill="${col}" rx="3" opacity="0.92"${oc}/>`;
+      if (bw > 24) svg += `<text x="${(bx+bw/2).toFixed(1)}" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="8" fill="white" text-anchor="middle" font-weight="700" pointer-events="none">F${idx}</text>`;
       if (hasT && bw > 20) {
         const cx = Math.min(bx+bw-8, bx+bw-3);
         svg += `<circle cx="${cx.toFixed(1)}" cy="${(rowY+9).toFixed(1)}" r="6.5" fill="white" opacity="0.93"${oc}/>`;
         svg += `<text x="${cx.toFixed(1)}" y="${(rowY+12.5).toFixed(1)}" font-size="7.5" fill="${col}" font-weight="800" text-anchor="middle"${oc}>${phaseTasks.length}</text>`;
       }
     });
-
-    // Task sub-bars (lower band: y+32 to y+51) — color indicators only, click phase bar for details
-    const toolTasks = DATA.tareas.filter(t =>
-      (v(t,'Herramienta *','Nombre Tarea *','Nombre Tarea')||'').trim().toLowerCase() === nombre.trim().toLowerCase()
-    );
-    let hasAnyTask = false;
-    toolTasks.forEach(task => {
-      const ts = _parseGanttDate(v(task,'Fecha Inicio*','Fecha Inicio *','Fecha Inicio'));
-      const te = _parseGanttDate(v(task,'Fecha Limite *','Fecha Limite*','Fecha Limite'));
-      if (!ts || !te) return;
-      hasAnyTask = true;
-      const tx = dx(ts);
-      const tw = Math.max(6, dx(te) - tx);
-      const estado = v(task,'Estado *');
-      const tcol = TASK_COLORS[estado] || '#8B9080';
-      svg += `<rect x="${tx.toFixed(1)}" y="${(rowY+32)}" width="${tw.toFixed(1)}" height="11" fill="${tcol}" rx="2" opacity="0.8"/>`;
-    });
-    if (!hasAnyTask) {
-      svg += `<text x="${(LW+8).toFixed(1)}" y="${(rowY+41).toFixed(1)}" font-size="7" fill="#C0C4B0" font-style="italic">sin tareas con fechas</text>`;
-    }
   });
 
   svg += `<line x1="${LW}" y1="${HH}" x2="${LW}" y2="${H}" stroke="#B8BBA8" stroke-width="1.5"/>`;
@@ -1941,27 +1915,13 @@ function renderProjectPlan(area, wrapId) {
       </div>
     </div>`).join('');
 
-  const taskLegendItems = [
-    {color:'#B07D0A',label:'Pendiente'},
-    {color:'#2C6E9A',label:'En curso'},
-    {color:'#2D8E74',label:'Completada'},
-    {color:'#B94040',label:'Bloqueada'},
-  ].map(l=>`<div style="display:flex;align-items:center;gap:5px">
-    <span style="width:14px;height:6px;border-radius:2px;background:${l.color};display:inline-block;flex-shrink:0"></span>
-    <span style="font-size:10px;color:var(--text2)">${l.label}</span>
-  </div>`).join('');
-
   wrap.innerHTML = `
-    <div style="display:flex;flex-wrap:wrap;gap:10px 28px;padding:14px 18px 12px;background:var(--bg2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)">
+    <div style="display:flex;flex-wrap:wrap;gap:10px 28px;padding:14px 18px 12px;background:var(--bg2);border-radius:8px;margin-bottom:14px;border:1px solid var(--border)">
       <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
         <span style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Fases del proyecto</span>
         <span style="font-size:9px;color:${areaColor};font-weight:700;letter-spacing:0.5px">↑ Herramientas ordenadas por prioridad (scoring)</span>
       </div>
       ${legendItems}
-    </div>
-    <div style="display:flex;align-items:center;gap:18px;padding:8px 18px;background:var(--bg2);border-radius:8px;margin-bottom:14px;border:1px solid var(--border)">
-      <span style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:1.2px;text-transform:uppercase;flex-shrink:0">Tareas</span>
-      ${taskLegendItems}
     </div>
     <div class="gantt-chart-scroll">${svg}</div>
     <div id="pp-task-panel-${wrapId}" style="display:none;margin-top:12px;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)"></div>`;
