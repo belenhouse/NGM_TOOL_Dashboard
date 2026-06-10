@@ -1753,7 +1753,7 @@ function renderProjectPlan(area, wrapId) {
       if (!fhRow) return null;
       const s = _parseGanttDate(v(fhRow,'Fecha Inicio','Fecha Inicio *'));
       const e = _parseGanttDate(v(fhRow,'Fecha Fin','Fecha Fin *'));
-      return (s && e) ? {s, e} : null;
+      return (s && e && e.getTime() > s.getTime()) ? {s, e} : null;
     };
     const schedule = [];
     // Phase 0: use Fases_Herramienta if available; if row exists but no dates → skip
