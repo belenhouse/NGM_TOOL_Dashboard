@@ -1791,12 +1791,14 @@ function renderProjectPlan(area, wrapId) {
       const pNum = _faseNum((phase.name||'').toLowerCase()) || _faseNum((phase.id||'').toLowerCase());
       taskMap[`${ti}-${pi}`] = DATA.tareas.filter(t => {
         const th = (v(t,'Herramienta *','Nombre Tarea *','Nombre Tarea')||'').trim().toLowerCase();
+        const ta = (v(t,'Área *','Area *','Área','Area')||'').trim().toLowerCase();
         const tf = (v(t,'Fase *','Fase')||'').trim().toLowerCase();
         const tNum = _faseNum(tf);
         const pn = (phase.name||'').trim().toLowerCase();
         const pid = (phase.id||'').trim().toLowerCase();
         const phaseMatch = tf === pn || tf === pid || (tNum && pNum && tNum === pNum);
-        return th === toolName.trim().toLowerCase() && phaseMatch;
+        const areaMatch = !ta || ta === area.trim().toLowerCase();
+        return th === toolName.trim().toLowerCase() && phaseMatch && areaMatch;
       });
     });
   });
