@@ -1719,34 +1719,64 @@ function renderProjectPlan(area, wrapId) {
   }
 
   const phases = _getPhaseDurations();
+  const phase1Dur = phases[1]?.duration || 22;
+  const batchSize = area === 'Producto' ? 3 : 2;
 
-  // Helper: find Fases_Herramienta row for a given tool + phase (filters by area when present)
+  // Phase 0: GLOBAL — same block for ALL tools simultaneously
+  const globalP0Start = new Date(2026, 5, 8);   // June 8
+  const globalP0End   = new Date(2026, 5, 22);  // June 22 (= first Phase 1 start)
+
+  // Helper: find Fases_Herramienta row for a given tool + phase (also filters by area if column present)
   const _fhMatch = (toolName, phase) =>
     DATA.fasesHerramienta.find(fh => {
       const ht = (v(fh,'Herramienta','Herramienta *')||'').trim().toLowerCase();
       const ft = (v(fh,'Fase','Fase *')||'').trim().toLowerCase();
       const at = (v(fh,'Área','Area','Área *','Area *')||'').trim().toLowerCase();
       const areaOk = !at || at === area.trim().toLowerCase();
-      const phaseOk = ft === (phase.name||'').trim().toLowerCase() ||
-                      ft === (phase.id||'').trim().toLowerCase() ||
-                      (ft && (phase.name||'').trim().toLowerCase().startsWith(ft));
-      return ht === toolName.trim().toLowerCase() && areaOk && phaseOk;
+      return ht === toolName.trim().toLowerCase() && areaOk &&
+             (ft === (phase.name||'').trim().toLowerCase() || ft === (phase.id||'').trim().toLowerCase());
     });
 
-  const _fhDates = (fhRow) => {
-    if (!fhRow) return null;
-    const s = _parseGanttDate(v(fhRow,'Fecha Inicio','Fecha Inicio *'));
-    const e = _parseGanttDate(v(fhRow,'Fecha Fin','Fecha Fin *'));
-    return (s && e && e.getTime() > s.getTime()) ? {s, e} : null;
-  };
-
-  // Phases come ONLY from Fases_Herramienta — no batch fallback
-  const toolSchedules = tools.map((r) => {
+  // Phase 1+ per batch, staggered
+  let batchPhase1Start = new Date(2026, 5, 22);
+  const toolSchedules = tools.map((r, i) => {
+    if (i > 0 && i % batchSize === 0) {
+      batchPhase1Start = new Date(batchPhase1Start.getTime() + (phase1Dur + 21) * D);
+    }
     const toolName = v(r,'Nombre *','Nombre');
-    const schedule = phases.map((p, j) => {
+    const toolFH = DATA.fasesHerramienta.filter(fh => {
+      const ht = (v(fh,'Herramienta','Herramienta *')||'').trim().toLowerCase();
+      const at = (v(fh,'Área','Area','Área *','Area *')||'').trim().toLowerCase();
+      return ht === toolName.trim().toLowerCase() && (!at || at === area.trim().toLowerCase());
+    });
+    const _fhDates = (fhRow) => {
+      if (!fhRow) return null;
+      const s = _parseGanttDate(v(fhRow,'Fecha Inicio','Fecha Inicio *'));
+      const e = _parseGanttDate(v(fhRow,'Fecha Fin','Fecha Fin *'));
+      return (s && e && e.getTime() > s.getTime()) ? {s, e} : null;
+    };
+    // Row exists but BOTH date cells are empty → intentional skip (phase not applicable)
+    // Row exists but dates are present yet invalid (wrong year, etc.) → fall back to batch
+    const _fhEmpty = (fhRow) => !!fhRow &&
+      !v(fhRow,'Fecha Inicio','Fecha Inicio *') && !v(fhRow,'Fecha Fin','Fecha Fin *');
+
+    const schedule = [];
+    // Phase 0
+    const fh0 = _fhMatch(toolName, phases[0]);
+    const d0 = _fhDates(fh0);
+    const skip0 = _fhEmpty(fh0);
+    const phase0End = d0 ? d0.e : new Date(globalP0End);
+    schedule.push({ idx:0, phase:phases[0], start:d0?d0.s:new Date(globalP0Start), end:phase0End, skip:skip0 });
+    // Phase 1+ — start from max(batchPhase1Start, phase0End) to avoid overlap
+    let cur = new Date(Math.max(batchPhase1Start.getTime(), phase0End.getTime()));
+    phases.slice(1).forEach((p, j) => {
       const fhRow = _fhMatch(toolName, p);
       const dj = _fhDates(fhRow);
-      return { idx:j, phase:p, start:dj?dj.s:new Date(0), end:dj?dj.e:new Date(0), skip:!dj };
+      const skipJ = _fhEmpty(fhRow);
+      const start = dj ? dj.s : new Date(cur);
+      const end   = dj ? dj.e : new Date(cur.getTime() + p.duration * D);
+      schedule.push({ idx:j+1, phase:p, start, end, skip:skipJ });
+      cur = end;
     });
     return { r, schedule, toolName };
   });
@@ -1761,14 +1791,12 @@ function renderProjectPlan(area, wrapId) {
       const pNum = _faseNum((phase.name||'').toLowerCase()) || _faseNum((phase.id||'').toLowerCase());
       taskMap[`${ti}-${pi}`] = DATA.tareas.filter(t => {
         const th = (v(t,'Herramienta *','Nombre Tarea *','Nombre Tarea')||'').trim().toLowerCase();
-        const ta = (v(t,'Área *','Area *','Área','Area')||'').trim().toLowerCase();
         const tf = (v(t,'Fase *','Fase')||'').trim().toLowerCase();
         const tNum = _faseNum(tf);
         const pn = (phase.name||'').trim().toLowerCase();
         const pid = (phase.id||'').trim().toLowerCase();
         const phaseMatch = tf === pn || tf === pid || (tNum && pNum && tNum === pNum);
-        const areaMatch = !ta || ta === area.trim().toLowerCase();
-        return th === toolName.trim().toLowerCase() && phaseMatch && areaMatch;
+        return th === toolName.trim().toLowerCase() && phaseMatch;
       });
     });
   });
@@ -1781,9 +1809,8 @@ function renderProjectPlan(area, wrapId) {
   const noMatch = invNames.filter(n => !fhNames.some(f => f.trim().toLowerCase() === n.trim().toLowerCase()));
   if (noMatch.length) console.warn(`[${area}] Sin filas en Fases_Herramienta para:`, noMatch, '\nNombres disponibles en sheet:', fhNames);
 
-  // Date range: June 1 → end of last visible phase across all tools
+  // Date range: June 1 → end of last phase across all tools (skip skipped phases)
   const allEnds = toolSchedules.flatMap(t => t.schedule.filter(s=>!s.skip).map(s => s.end.getTime()));
-  if (!allEnds.length) allEnds.push(new Date(2026, 11, 31).getTime()); // fallback: show Jun–Dec 2026
   const minD = new Date(2026, 5, 1); // always June 1
   let maxD = new Date(Math.max(...allEnds));
   maxD = new Date(maxD.getFullYear(), maxD.getMonth() + 1, 0); // end of last month
@@ -1891,7 +1918,7 @@ function renderProjectPlan(area, wrapId) {
       const hasT = phaseTasks.length > 0;
       const oc = hasT ? ` onclick="showGanttTasks('${wrapId}','${i}-${idx}')" style="cursor:pointer"` : '';
       svg += `<rect x="${bx.toFixed(1)}" y="${(rowY+4)}" width="${bw.toFixed(1)}" height="${RH-8}" fill="${col}" rx="3" opacity="0.92"${oc}/>`;
-      if (bw > 10) svg += `<text x="${(bx+bw/2).toFixed(1)}" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="8" fill="white" text-anchor="middle" font-weight="700" pointer-events="none">F${idx}</text>`;
+      if (bw > 24) svg += `<text x="${(bx+bw/2).toFixed(1)}" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="8" fill="white" text-anchor="middle" font-weight="700" pointer-events="none">F${idx}</text>`;
       if (hasT && bw > 20) {
         const cx = Math.min(bx+bw-8, bx+bw-3);
         svg += `<circle cx="${cx.toFixed(1)}" cy="${(rowY+9).toFixed(1)}" r="6.5" fill="white" opacity="0.93"${oc}/>`;
