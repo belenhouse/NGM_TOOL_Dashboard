@@ -898,7 +898,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div class="page-header">
       <div class="page-header-left">
         <h1 style="color:#2C6E9A">Project Plan · Producto</h1>
-        <p>Herramientas ordenadas por prioridad (Score). Fases por herramienta desde la pestaña Fases_Herramienta.</p>
+        <p>Herramientas ordenadas por Score. Fases calculadas desde el roadmap global. Lotes de 3.</p>
       </div>
     </div>
     <div class="gantt-wrap" id="gantt-producto-wrap">
@@ -911,7 +911,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div class="page-header">
       <div class="page-header-left">
         <h1 style="color:#88B318">Project Plan · Marketing</h1>
-        <p>Herramientas ordenadas por prioridad (Score). Fases por herramienta desde la pestaña Fases_Herramienta.</p>
+        <p>Herramientas ordenadas por Score. Fases calculadas desde el roadmap global. Lotes de 2.</p>
       </div>
     </div>
     <div class="gantt-wrap" id="gantt-marketing-wrap">
@@ -924,7 +924,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div class="page-header">
       <div class="page-header-left">
         <h1 style="color:#B07D0A">Project Plan · Operaciones</h1>
-        <p>Herramientas ordenadas por prioridad (Score). Fases por herramienta desde la pestaña Fases_Herramienta.</p>
+        <p>Herramientas ordenadas por Score. Fases calculadas desde el roadmap global. Lotes de 2.</p>
       </div>
     </div>
     <div class="gantt-wrap" id="gantt-operaciones-wrap">
@@ -937,7 +937,7 @@ tbody td { padding: 11px 14px; font-size: 13px; color: var(--text2); vertical-al
     <div class="page-header">
       <div class="page-header-left">
         <h1 style="color:#8B44AD">Project Plan · Comercial</h1>
-        <p>Herramientas ordenadas por prioridad (Score). Fases por herramienta desde la pestaña Fases_Herramienta.</p>
+        <p>Herramientas ordenadas por Score. Fases calculadas desde el roadmap global. Lotes de 2.</p>
       </div>
     </div>
     <div class="gantt-wrap" id="gantt-comercial-wrap">
@@ -1709,7 +1709,7 @@ function renderProjectPlan(area, wrapId) {
 
   const tools = DATA.inventario
     .filter(r => (r['_area']||v(r,'Area *','Área'))===area && v(r,'Nombre *','Nombre'))
-    .map(r => ({ r, score: parseFloat(v(r,'Score','Score *','Puntuacion','Puntuación','Prioridad')||'0')||0 }))
+    .map(r => ({ r, score: parseFloat(v(r,'Score')||'0')||0 }))
     .sort((a,b) => b.score - a.score)
     .map(t => t.r);
 
@@ -1775,21 +1775,11 @@ function renderProjectPlan(area, wrapId) {
   window._ppMeta = window._ppMeta || {};
   window._ppMeta[wrapId] = { taskMap, toolSchedules, phases, areaColor };
 
-  // Debug: log mismatches so user can fix Fases_Herramienta spelling/area
-  const fhForArea = DATA.fasesHerramienta.filter(fh => {
-    const at = (v(fh,'Área','Area','Área *','Area *')||'').trim().toLowerCase();
-    return !at || at === area.trim().toLowerCase();
-  });
-  const fhNames = [...new Set(fhForArea.map(fh => v(fh,'Herramienta','Herramienta *')).filter(Boolean))];
+  // Debug: log name mismatches so user can fix Fases_Herramienta spelling
+  const fhNames = [...new Set(DATA.fasesHerramienta.map(fh => v(fh,'Herramienta','Herramienta *')).filter(Boolean))];
   const invNames = toolSchedules.map(t => t.toolName);
   const noMatch = invNames.filter(n => !fhNames.some(f => f.trim().toLowerCase() === n.trim().toLowerCase()));
-  console.groupCollapsed(`[Project Plan ${area}] diagnóstico`);
-  console.log('Herramientas en inventario:', invNames);
-  console.log('Herramientas en Fases_Herramienta (área ' + area + '):', fhNames);
-  if (noMatch.length) console.warn('Sin filas en Fases_Herramienta para:', noMatch);
-  console.log('Total rows Fases_Herramienta:', DATA.fasesHerramienta.length, '| para este área:', fhForArea.length);
-  console.log('Áreas distintas en sheet:', [...new Set(DATA.fasesHerramienta.map(fh => v(fh,'Área','Area','Área *','Area *')))]);
-  console.groupEnd();
+  if (noMatch.length) console.warn(`[${area}] Sin filas en Fases_Herramienta para:`, noMatch, '\nNombres disponibles en sheet:', fhNames);
 
   // Date range: June 1 → end of last visible phase across all tools
   const allEnds = toolSchedules.flatMap(t => t.schedule.filter(s=>!s.skip).map(s => s.end.getTime()));
