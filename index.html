@@ -1920,12 +1920,12 @@ function renderProjectPlan(area, wrapId) {
       svg += `<rect x="${bx.toFixed(1)}" y="${(rowY+4)}" width="${bw.toFixed(1)}" height="${RH-8}" fill="${col}" rx="3" opacity="0.92"${oc}/>`;
       // F-label: always render; SVG clips text to the viewport naturally
       svg += `<text x="${(bx+bw/2).toFixed(1)}" y="${(rowY+RH/2+3.5).toFixed(1)}" font-size="8" fill="white" text-anchor="middle" font-weight="700" pointer-events="none">F${idx}</text>`;
-      // Task badge: always show when tasks exist, anchored at top-right corner of bar
+      // Task badge: white circle at top-right corner of bar, drawn after rect so always on top
       if (hasT) {
-        const bcx = bx + bw + 6;
-        const bcy = rowY + 4;
-        svg += `<circle cx="${bcx.toFixed(1)}" cy="${bcy.toFixed(1)}" r="6.5" fill="#1A1F12" opacity="0.82"${oc}/>`;
-        svg += `<text x="${bcx.toFixed(1)}" y="${(bcy+3.5).toFixed(1)}" font-size="7" fill="white" font-weight="800" text-anchor="middle" pointer-events="none">${phaseTasks.length}</text>`;
+        const bcx = bx + bw - 7;
+        const bcy = rowY + 7;
+        svg += `<circle cx="${bcx.toFixed(1)}" cy="${bcy.toFixed(1)}" r="7" fill="white" opacity="0.95"${oc}/>`;
+        svg += `<text x="${bcx.toFixed(1)}" y="${(bcy+3).toFixed(1)}" font-size="7.5" fill="${col}" font-weight="800" text-anchor="middle" pointer-events="none">${phaseTasks.length}</text>`;
       }
     });
   });
